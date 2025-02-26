@@ -1,0 +1,38 @@
+body {
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.text-gradient {
+    background: linear-gradient(to right, black, red, #eeba0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+
+.input-group-text {
+    background: none;
+    border-right: none;
+}
+
+.form-control {
+    border-left: none;
+}
+
+i {
+    font-size: 1.2rem;
+}
+
+button[type="submit"] {
+    width: 100%;
+}
