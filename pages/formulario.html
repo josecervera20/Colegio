@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Metadatos -->
     <meta charset="UTF-8">
@@ -15,6 +16,7 @@
     <!-- Iconos de Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
+
 <body>
     <!-- Barra de navegacion -->
     <nav class="navbar navbar-expand-md navbar-light">
@@ -37,46 +39,60 @@
     </nav>
 
     <div class="container mt-5">
-      <div class="form-container">
-          <h3 class="text-center mb-4">Bienvenido al Colegio Once México</h3>
-          <p class="text-center">Por favor registra tu entrada al colegio.</p>
-          <form class="row g-3">
-              <div class="col-md-6">
-                  <label for="fecha" class="form-label">Fecha</label>
-                  <input type="datetime-local" class="form-control" id="fecha" name="fecha" required>
-              </div>
-              <div class="col-md-6">
-                  <label for="hora" class="form-label">Hora</label>
-                  <input type="time" class="form-control" id="hora" name="hora" required>
-              </div>
-              <div class="col-12">
-                  <label for="nombre" class="form-label">Nombre</label>
-                  <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre completo" required>
-              </div>
-              <div class="col-12">
-                  <label for="compania" class="form-label">Compañía</label>
-                  <input type="text" class="form-control" id="compania" name="compania" placeholder="Nombre de la compañía">
-              </div>
-              <div class="col-md-6">
-                  <label for="visitaA" class="form-label">Visita a</label>
-                  <input type="text" class="form-control" id="visitaA" name="visitaA" placeholder="Nombre de la persona a visitar" required>
-              </div>
-              <div class="col-md-6">
-                  <label for="departamento" class="form-label">Departamento</label>
-                  <select id="departamento" class="form-select" name="departamento" required>
-                      <option selected>Selecciona...</option>
-                      <option>Administración</option>
-                      <option>Dirección</option>
-                      <option>Recepción</option>
-                      <option>Otros</option>
-                  </select>
-              </div>
-              <div class="col-12 d-flex justify-content-center">
-                  <button type="submit" class="btn btn-primary">Registrar Entrada</button>
-              </div>
-          </form>
-      </div>
-  </div>
+        <div class="form-container">
+            <h3 class="text-center mb-4">Bienvenido al Colegio Once México</h3>
+            <p class="text-center">Por favor registra tu entrada al colegio.</p>
+            <form class="row g-3">
+                <div class="col-md-6">
+                    <label for="fecha" class="form-label">Fecha</label>
+                    <input type="datetime-local" class="form-control" id="fecha" name="fecha" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="hora" class="form-label">Hora</label>
+                    <input type="time" class="form-control" id="hora" name="hora" required>
+                </div>
+                <div class="col-12">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre completo"
+                        required>
+                </div>
+                <div class="col-12">
+                    <label for="compania" class="form-label">Compañía</label>
+                    <input type="text" class="form-control" id="compania" name="compania"
+                        placeholder="Nombre de la compañía">
+                </div>
+                <div class="col-md-6">
+                    <label for="visitaA" class="form-label">Visita a</label>
+                    <input type="text" class="form-control" id="visitaA" name="visitaA"
+                        placeholder="Nombre de la persona a visitar" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="departamento" class="form-label">Departamento</label>
+                    <select id="departamento" class="form-select" name="departamento" required>
+                        <option selected>Selecciona...</option>
+                        <option>Admisiones</option>
+                        <option>Administración</option>
+                        <option>Caseta</option>
+                        <option>Contabilidad</option>
+                        <option>Inglés</option>
+                        <option>Coordinación Prescolar y Primaria</option>
+                        <option>Coordinación Secundaria y Bachillerato</option>
+                        <option>Dirección General</option>
+                        <option>Paramédico</option>
+                        <option>Psicopedagógico</option>
+                        <option>Recepción</option>
+                        <option>Servicios Generales</option>
+                        <option>Sistemas</option>
+                        <option>Vinculación</option>
+                    </select>
+                </div>
+                <div class="col-12 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary">Registrar Entrada</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
+
 </html>
