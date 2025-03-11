@@ -31,7 +31,7 @@
                 </a>
                 <ul class="navbar-nav d-flex justify-content-center align-items-center">
                     <li class="nav-item">
-                        <a href="/index.html" class="btn btn-danger rounded-pill" role="button">Salir</a>
+                        <a href="/pages/panel.html" class="btn btn-danger rounded-pill" role="button">Salir</a>
                     </li>
                 </ul>
             </div>
@@ -45,7 +45,7 @@
             <form class="row g-3">
                 <div class="col-md-6">
                     <label for="fecha" class="form-label">Fecha</label>
-                    <input type="datetime-local" class="form-control" id="fecha" name="fecha" required>
+                    <input type="date" class="form-control" id="fecha" name="fecha" required>
                 </div>
                 <div class="col-md-6">
                     <label for="hora" class="form-label">Hora</label>
@@ -56,10 +56,26 @@
                     <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre completo"
                         required>
                 </div>
-                <div class="col-12">
+                <div class="col-md-6">
+                    <label for="tipoVisita" class="form-label">Tipo de Visita</label>
+                    <select id="tipoVisita" class="form-select" name="tipoVisita" required>
+                        <option selected>Selecciona...</option>
+                        <option>Visitante</option>
+                        <option>Proveedor</option>
+                        <option>Padre de Familia</option>
+                        <option>Exalumno</option>
+                        <option>Otro</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
                     <label for="compania" class="form-label">Compañía</label>
                     <input type="text" class="form-control" id="compania" name="compania"
                         placeholder="Nombre de la compañía">
+                </div>
+                <div class="col-12">
+                    <label for="motivoVisita" class="form-label">Motivo de la Visita</label>
+                    <input type="text" class="form-control" id="motivoVisita" name="motivoVisita"
+                        placeholder="Indique el propósito de su visita">
                 </div>
                 <div class="col-md-6">
                     <label for="visitaA" class="form-label">Visita a</label>
