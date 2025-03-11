@@ -3,7 +3,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-
+  margin: 0;
 }
 
 /* Barra de navegacion */
@@ -43,6 +43,8 @@ body {
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
 }
 
 /* Adaptable (Responsivo) */
@@ -51,4 +53,9 @@ body {
   .navbar-brand {
     display: none;
   }
+
+  .panel-container {
+    padding: 1.5rem;
+  }
+
 }
