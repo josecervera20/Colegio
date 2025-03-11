@@ -29,9 +29,12 @@
                 <a class="navbar-brand" href="#">
                     <i class="bi bi-mortarboard-fill" aria-label="Icono de graduación"></i> Colegio Once México
                 </a>
-                <ul class="navbar-nav d-flex justify-content-center align-items-center">
+                <ul class="navbar-nav ms-auto d-flex justify-content-center align-items-center">
                     <li class="nav-item">
-                        <a href="./panel.html" class="btn btn-danger rounded-pill" role="button">Salir</a>
+                        <a href="/pages/panel.html" class="btn btn-danger rounded-pill" role="button"
+                            data-bs-toggle="tooltip" title="Regresar al menú principal">
+                            <i class="bi bi-grid me-1"></i> Salir
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -42,25 +45,25 @@
             <div class="col-12 d-flex justify-content-center">
                 <label class="form-label" for="dia">Selecciona una fecha:</label>
             </div>
-    
+
             <div class="col-12">
                 <select class="form-select" id="dia" name="dia" required>
                     <option selected disabled value="">Día</option>
                 </select>
             </div>
-    
+
             <div class="col-12">
                 <select class="form-select" id="mes" name="mes" required>
                     <option selected disabled value="">Mes</option>
                 </select>
             </div>
-    
+
             <div class="col-12">
                 <select class="form-select" id="anio" name="anio" required>
                     <option selected disabled value="">Año</option>
                 </select>
             </div>
-    
+
             <div class="col-12 d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary">Consultar</button>
             </div>
