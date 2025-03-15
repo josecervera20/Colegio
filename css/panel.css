@@ -1,3 +1,5 @@
+/* Estilos del body */
+
 body {
   background-color: #f8f9fa;
   display: flex;
@@ -29,7 +31,7 @@ body {
   margin-right: 0.3rem;
 }
 
-/* Contenedor */
+/* Estilos del Contenedor */
 
 .container {
   flex: 1;
@@ -37,6 +39,8 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+/* Estilos del contenedor del Panel */
 
 .panel-container {
   background: white;
