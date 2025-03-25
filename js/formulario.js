@@ -1,97 +1,94 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const formulario = document.querySelector("form");
-    const fechaInput = document.getElementById("fecha");
-    const horaInput = document.getElementById("hora");
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    const fechaInput = document.getElementById('fecha');
+    const horaInput = document.getElementById('hora');
+    const nombreInput = document.getElementById('nombre');
+    const tipoVisitaSelect = document.getElementById('tipoVisita');
+    const companiaInput = document.getElementById('compania');
+    const motivoVisitaInput = document.getElementById('motivoVisita');
+    const visitaAInput = document.getElementById('visitaA');
+    const departamentoSelect = document.getElementById('departamento');
 
-    // Cargar fecha y hora automáticamente
-    cargarFechaHora();
-    setInterval(cargarHora, 1000); // Actualizar la hora cada segundo
-
-    // Evento de envío del formulario
-    formulario.addEventListener("submit", manejarEnvioFormulario);
-
-    // Carga la fecha y hora actual en los campos del formulario.
-    function cargarFechaHora() {
+    // Función para actualizar la fecha y hora
+    function actualizarFechaHora() {
         const ahora = new Date();
-        const fechaActual = ahora.toISOString().slice(0, 10);
-        fechaInput.value = fechaActual;
-        cargarHora(); // Cargar la hora inicial
+        const fecha = ahora.toISOString().split('T')[0];
+        const hora = ahora.toTimeString().split(' ')[0].slice(0, 5); // Obtener HH:MM
+
+        fechaInput.value = fecha;
+        horaInput.value = hora;
     }
 
-    // Carga la hora actual en el campo de hora.
-    function cargarHora() {
-        const ahora = new Date();
-        const horaActual = ahora.toTimeString().slice(0, 5);
-        horaInput.value = horaActual;
+    // Actualizar fecha y hora al cargar la página y cada segundo
+    actualizarFechaHora();
+    setInterval(actualizarFechaHora, 1000);
+
+    // Función para mostrar mensajes de error
+    function mostrarError(input, mensaje) {
+        const errorDiv = document.getElementById(`${input.id}-error`) || document.createElement('div');
+        errorDiv.id = `${input.id}-error`;
+        errorDiv.className = 'text-danger';
+        errorDiv.textContent = mensaje;
+        input.classList.add('is-invalid');
+        input.parentNode.appendChild(errorDiv);
+        input.setAttribute('aria-describedby', `${input.id}-error`);
     }
 
-    // Maneja el envío del formulario.
-    function manejarEnvioFormulario(evento) {
-        evento.preventDefault();
-        validarFormulario();
+    // Función para limpiar mensajes de error
+    function limpiarError(input) {
+        const errorDiv = document.getElementById(`${input.id}-error`);
+        if (errorDiv) {
+            errorDiv.remove();
+            input.classList.remove('is-invalid');
+            input.removeAttribute('aria-describedby');
+        }
     }
 
-    // Valida los campos del formulario.
-    function validarFormulario() {
-        const nombre = document.getElementById("nombre").value.trim();
-        const tipoVisita = document.getElementById("tipoVisita").value;
-        const visitaA = document.getElementById("visitaA").value.trim();
-        const departamento = document.getElementById("departamento").value;
+    // Validación del formulario
+    form.addEventListener('submit', function (event) {
+        let valido = true;
 
-        const errores = [];
-
-        // Validación de nombre
-        if (!nombre) {
-            errores.push("El nombre es requerido.");
-        } else if (nombre.length < 3) {
-            errores.push("El nombre debe tener al menos 3 caracteres.");
+        // Validación del nombre
+        if (nombreInput.value.trim() === '') {
+            mostrarError(nombreInput, 'El nombre es requerido.');
+            valido = false;
+        } else {
+            limpiarError(nombreInput);
         }
 
-        // Validación de tipo de visita
-        if (tipoVisita === "Selecciona...") {
-            errores.push("Selecciona un tipo de visita.");
+        // Validación del tipo de visita
+        if (tipoVisitaSelect.value === 'Selecciona...') {
+            mostrarError(tipoVisitaSelect, 'Selecciona un tipo de visita.');
+            valido = false;
+        } else {
+            limpiarError(tipoVisitaSelect);
         }
 
         // Validación de visita a
-        if (!visitaA) {
-            errores.push("El nombre de la persona a visitar es requerido.");
-        }
-
-        // Validación de departamento
-        if (departamento === "Selecciona...") {
-            errores.push("Selecciona un departamento.");
-        }
-
-        // Mostrar errores o enviar el formulario.
-        if (errores.length > 0) {
-            mostrarErrores(errores);
+        if (visitaAInput.value.trim() === '') {
+            mostrarError(visitaAInput, 'El nombre de la persona a visitar es requerido.');
+            valido = false;
         } else {
-            formulario.submit();
+            limpiarError(visitaAInput);
         }
-    }
 
-    // Muestra los mensajes de error en el formulario.
-    function mostrarErrores(errores) {
-        const contenedorErrores = document.createElement("div");
-        contenedorErrores.classList.add("alert", "alert-danger", "mt-3");
+        // Validación del departamento
+        if (departamentoSelect.value === 'Selecciona...') {
+            mostrarError(departamentoSelect, 'Selecciona un departamento.');
+            valido = false;
+        } else {
+            limpiarError(departamentoSelect);
+        }
 
-        // Limpiar el contenedor de errores antes de agregar nuevos errores.
-        contenedorErrores.innerHTML = "";
+        // Prevenir el envío del formulario si hay errores
+        if (!valido) {
+            event.preventDefault();
+        }
+    });
 
-        errores.forEach((error) => {
-            const parrafoError = document.createElement("p");
-            parrafoError.textContent = error;
-            contenedorErrores.appendChild(parrafoError);
-        });
-
-        formulario.insertBefore(
-            contenedorErrores,
-            formulario.querySelector("button[type='submit']")
-        );
-
-        // Eliminar errores después de 5 segundos.
-        setTimeout(() => {
-            contenedorErrores.remove();
-        }, 5000);
-    }
+    // Limpiar errores al cambiar los inputs
+    nombreInput.addEventListener('input', () => limpiarError(nombreInput));
+    tipoVisitaSelect.addEventListener('change', () => limpiarError(tipoVisitaSelect));
+    visitaAInput.addEventListener('input', () => limpiarError(visitaAInput));
+    departamentoSelect.addEventListener('change', () => limpiarError(departamentoSelect));
 });
