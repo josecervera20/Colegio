@@ -10,134 +10,147 @@ document.addEventListener('DOMContentLoaded', function () {
     const departamentoSelect = document.getElementById('departamento');
     const limpiarDatosBtn = document.getElementById('limpiarDatos');
     const registrarEntradaBtn = document.querySelector('button[type="submit"]');
-    const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionModal'));
-    const datosRegistroLista = document.getElementById('datosRegistro');
+    const confirmacionModalElement = document.getElementById('confirmacionModal');
+    const confirmacionModal = new bootstrap.Modal(confirmacionModalElement);
     const confirmarRegistroBtn = document.getElementById('confirmarRegistroBtn');
     const mensajeExitoDiv = document.getElementById('mensajeExito');
+    const confirmacionFechaSpan = document.getElementById('confirmacion-fecha');
+    const confirmacionHoraSpan = document.getElementById('confirmacion-hora');
+    const confirmacionNombreSpan = document.getElementById('confirmacion-nombre');
+    const confirmacionTipoVisitaSpan = document.getElementById('confirmacion-tipoVisita');
+    const confirmacionCompaniaSpan = document.getElementById('confirmacion-compania');
+    const confirmacionMotivoVisitaSpan = document.getElementById('confirmacion-motivoVisita');
+    const confirmacionVisitaASpan = document.getElementById('confirmacion-visitaA');
+    const confirmacionDepartamentoSpan = document.getElementById('confirmacion-departamento');
+    const modalElement = document.getElementById('confirmacionModal'); // Asegurar que modalElement esté definido
 
-    // Función para actualizar la fecha y hora
-    function actualizarFechaHora() {
+    // Función para formatear la fecha a DD/MM/YYYY
+    const formatDate = (date) => {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+    // Función para formatear la hora a HH:MM AM/PM
+    const formatTime = (date) => {
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'p. m.' : 'a. m.';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // La hora '0' debe ser '12'
+        return `${String(hours).padStart(1, ' ')}:${String(minutes).padStart(2, '0')} ${ampm}`;
+    };
+
+    // Función para obtener la hora en formato HH:MM (24 horas)
+    const get24HourTime = (date) => {
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`;
+    };
+
+    // Función para actualizar la fecha y hora en los inputs
+    const actualizarFechaHoraInputs = () => {
         const ahora = new Date();
-        const fecha = ahora.toISOString().split('T')[0];
-        const hora = ahora.toTimeString().split(' ')[0].slice(0, 5); // Obtener HH:MM
-
-        fechaInput.value = fecha;
-        horaInput.value = hora;
-    }
-
-    // Actualizar fecha y hora al cargar la página y cada segundo
-    actualizarFechaHora();
-    setInterval(actualizarFechaHora, 1000);
+        fechaInput.value = ahora.toISOString().split('T')[0];
+        horaInput.value = get24HourTime(ahora); // Usar el formato de 24 horas para el input time
+    };
 
     // Función para mostrar mensajes de error personalizados
-    function mostrarError(input, mensaje) {
+    const mostrarError = (input, mensaje) => {
         const errorDiv = document.getElementById(`${input.id}-error`) || document.createElement('div');
         errorDiv.id = `${input.id}-error`;
         errorDiv.className = 'text-danger';
         errorDiv.textContent = mensaje;
         input.classList.add('is-invalid');
-        input.classList.remove('is-valid'); // Asegurarse de que no esté la palomita verde
         input.parentNode.appendChild(errorDiv);
         input.setAttribute('aria-describedby', `${input.id}-error`);
-    }
+    };
 
     // Función para limpiar mensajes de error
-    function limpiarError(input) {
+    const limpiarError = (input) => {
         const errorDiv = document.getElementById(`${input.id}-error`);
         if (errorDiv) {
             errorDiv.remove();
             input.classList.remove('is-invalid');
-            input.classList.remove('is-valid'); // Asegurarse de que no esté la palomita verde
             input.removeAttribute('aria-describedby');
         }
-    }
+    };
 
-    registrarEntradaBtn.addEventListener('click', function (event) {
-        event.preventDefault(); // Evitar el envío automático del formulario
+    // Función para validar el formulario
+    const validarFormulario = () => {
         let valido = true;
+        valido = validarCampo(nombreInput, 'El nombre es requerido.') && valido;
+        valido = validarSelect(tipoVisitaSelect, 'Selecciona un tipo de visita.') && valido;
+        valido = validarCampo(companiaInput, 'El nombre de la compañía es requerido.') && valido;
+        valido = validarCampo(motivoVisitaInput, 'El motivo de la visita es requerido.') && valido;
+        valido = validarCampo(visitaAInput, 'El nombre de la persona a visitar es requerido.') && valido;
+        valido = validarSelect(departamentoSelect, 'Selecciona un departamento.') && valido;
+        return valido;
+    };
 
-        // Realizar validaciones personalizadas y mostrar mensajes de error
-        if (nombreInput.value.trim() === '') {
-            mostrarError(nombreInput, 'El nombre es requerido.');
-            valido = false;
+    // Función auxiliar para validar campos de texto
+    const validarCampo = (input, mensajeError) => {
+        if (input.value.trim() === '') {
+            mostrarError(input, mensajeError);
+            return false;
         } else {
-            limpiarError(nombreInput);
+            limpiarError(input);
+            return true;
         }
+    };
 
-        if (tipoVisitaSelect.value === 'Selecciona...') {
-            mostrarError(tipoVisitaSelect, 'Selecciona un tipo de visita.');
-            valido = false;
+    // Función auxiliar para validar selects
+    const validarSelect = (select, mensajeError) => {
+        if (select.value === 'Selecciona...') {
+            mostrarError(select, mensajeError);
+            return false;
         } else {
-            limpiarError(tipoVisitaSelect);
+            limpiarError(select);
+            return true;
         }
+    };
 
-        if (companiaInput.value.trim() === '') {
-            mostrarError(companiaInput, 'El nombre de la compañía es requerido.');
-            valido = false;
-        } else {
-            limpiarError(companiaInput);
-        }
+    // Función para llenar los datos en el modal de confirmación
+    const llenarModalConfirmacion = () => {
+        const ahora = new Date();
+        confirmacionFechaSpan.textContent = formatDate(ahora);
+        confirmacionHoraSpan.textContent = formatTime(ahora);
+        confirmacionNombreSpan.textContent = nombreInput.value;
+        confirmacionTipoVisitaSpan.textContent = tipoVisitaSelect.options[tipoVisitaSelect.selectedIndex].text;
+        confirmacionCompaniaSpan.textContent = companiaInput.value;
+        confirmacionMotivoVisitaSpan.textContent = motivoVisitaInput.value;
+        confirmacionVisitaASpan.textContent = visitaAInput.value;
+        confirmacionDepartamentoSpan.textContent = departamentoSelect.options[departamentoSelect.selectedIndex].text;
+    };
 
-        if (motivoVisitaInput.value.trim() === '') {
-            mostrarError(motivoVisitaInput, 'El motivo de la visita es requerido.');
-            valido = false;
-        } else {
-            limpiarError(motivoVisitaInput);
-        }
-
-        if (visitaAInput.value.trim() === '') {
-            mostrarError(visitaAInput, 'El nombre de la persona a visitar es requerido.');
-            valido = false;
-        } else {
-            limpiarError(visitaAInput);
-        }
-
-        if (departamentoSelect.value === 'Selecciona...') {
-            mostrarError(departamentoSelect, 'Selecciona un departamento.');
-            valido = false;
-        } else {
-            limpiarError(departamentoSelect);
-        }
-
-        // Si todos los campos requeridos son válidos, mostrar el modal
-        if (valido) {
-            // Llenar los datos en el modal
-            document.getElementById('confirmacion-fecha').textContent = fechaInput.value;
-            document.getElementById('confirmacion-hora').textContent = horaInput.value;
-            document.getElementById('confirmacion-nombre').textContent = nombreInput.value;
-            document.getElementById('confirmacion-tipoVisita').textContent = tipoVisitaSelect.options[tipoVisitaSelect.selectedIndex].text;
-            document.getElementById('confirmacion-compania').textContent = companiaInput.value;
-            document.getElementById('confirmacion-motivoVisita').textContent = motivoVisitaInput.value;
-            document.getElementById('confirmacion-visitaA').textContent = visitaAInput.value;
-            document.getElementById('confirmacion-departamento').textContent = departamentoSelect.options[departamentoSelect.selectedIndex].text;
-
-            // Mostrar el modal
+    // Evento al hacer clic en el botón "Registrar Entrada"
+    registrarEntradaBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (validarFormulario()) {
+            llenarModalConfirmacion();
             confirmacionModal.show();
         }
     });
 
-    // Evento para cuando se cierra el modal (si se hace clic en "Editar" o en la "x")
-    const modalElement = document.getElementById('confirmacionModal');
+    // Evento al cerrar el modal
     modalElement.addEventListener('hide.bs.modal', function (event) {
-        // Permitir al usuario editar, no necesitamos hacer nada aquí, el formulario sigue ahí
+        // No es necesario realizar ninguna acción específica al cerrar el modal para edición
     });
 
-    // Evento para cuando se confirma el registro
+    // Evento al confirmar el registro en el modal
     confirmarRegistroBtn.addEventListener('click', function () {
         confirmacionModal.hide();
-        // Aquí iría la lógica para enviar los datos del formulario al servidor
-        // Por ahora, solo mostramos el mensaje de éxito en el frontend
         mensajeExitoDiv.classList.remove('d-none');
-        form.reset(); // Opcional: limpiar el formulario después del registro exitoso
-        form.classList.remove('was-validated'); // Limpiar la indicación de validación
-        // Opcional: ocultar el mensaje de éxito después de un tiempo
+        form.reset();
+        form.classList.remove('was-validated');
         setTimeout(() => {
             mensajeExitoDiv.classList.add('d-none');
         }, 3000);
     });
 
+    // Evento al hacer clic en el botón "Limpiar Datos"
     limpiarDatosBtn.addEventListener('click', function() {
-        // Limpiar solo los campos específicos
         nombreInput.value = '';
         tipoVisitaSelect.value = 'Selecciona...';
         companiaInput.value = '';
@@ -145,15 +158,15 @@ document.addEventListener('DOMContentLoaded', function () {
         visitaAInput.value = '';
         departamentoSelect.value = 'Selecciona...';
 
-        // Limpiar cualquier mensaje de error que pudiera estar visible
-        const errorDivs = document.querySelectorAll('.text-danger');
-        errorDivs.forEach(errorDiv => errorDiv.remove());
-        const invalidInputs = document.querySelectorAll('.is-invalid');
-        invalidInputs.forEach(input => {
-            input.classList.remove('is-invalid');
-            input.classList.remove('is-valid'); // Asegurarse de que no esté la palomita verde
-        });
-        form.classList.remove('was-validated'); // Limpiar la indicación de validación al limpiar el formulario
+        // Limpiar mensajes de error explícitamente
+        limpiarError(nombreInput);
+        limpiarError(tipoVisitaSelect);
+        limpiarError(companiaInput);
+        limpiarError(motivoVisitaInput);
+        limpiarError(visitaAInput);
+        limpiarError(departamentoSelect);
+
+        form.classList.remove('was-validated');
     });
 
     // Limpiar errores al cambiar los inputs
@@ -163,4 +176,8 @@ document.addEventListener('DOMContentLoaded', function () {
     motivoVisitaInput.addEventListener('input', () => limpiarError(motivoVisitaInput));
     visitaAInput.addEventListener('input', () => limpiarError(visitaAInput));
     departamentoSelect.addEventListener('change', () => limpiarError(departamentoSelect));
+
+    // Inicializar la fecha y hora en los inputs
+    actualizarFechaHoraInputs();
+    setInterval(actualizarFechaHoraInputs, 1000);
 });
