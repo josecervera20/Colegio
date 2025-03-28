@@ -47,6 +47,11 @@
             <h3 class="text-center mb-4">Bienvenido al Colegio Once México</h3>
             <p class="text-center">Por favor registra tu entrada al colegio.</p>
             <form class="row g-3">
+                <div class="row">
+                    <div id="mensajeExito" class="alert alert-success d-none col-md-8 text-center" role="alert">
+                        Registro exitoso. ¡Bienvenido!
+                    </div>
+                </div>
                 <div class="col-md-6">
                     <label for="fecha" class="form-label">Fecha</label>
                     <input type="date" class="form-control" id="fecha" name="fecha">
@@ -113,7 +118,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmacionModal" tabindex="-1" aria-labelledby="confirmacionModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -140,10 +146,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div id="mensajeExito" class="alert alert-success mt-3 d-none" role="alert">
-        Registro exitoso. ¡Bienvenido!
     </div>
 
     <!-- Bootstrap JS -->
