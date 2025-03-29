@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
+    // Formulario y campos
     const form = document.querySelector('form');
     const fechaInput = document.getElementById('fecha');
     const horaInput = document.getElementById('hora');
@@ -10,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const departamentoSelect = document.getElementById('departamento');
     const limpiarDatosBtn = document.getElementById('limpiarDatos');
     const registrarEntradaBtn = document.querySelector('button[type="submit"]');
+
+    // Modal de confirmación
     const confirmacionModalElement = document.getElementById('confirmacionModal');
     const confirmacionModal = new bootstrap.Modal(confirmacionModalElement);
     const confirmarRegistroBtn = document.getElementById('confirmarRegistroBtn');
@@ -22,52 +25,45 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmacionMotivoVisitaSpan = document.getElementById('confirmacion-motivoVisita');
     const confirmacionVisitaASpan = document.getElementById('confirmacion-visitaA');
     const confirmacionDepartamentoSpan = document.getElementById('confirmacion-departamento');
-    const modalElement = document.getElementById('confirmacionModal'); // Asegurar que modalElement esté definido
+    const modalCloseButton = document.getElementById('modalCloseButton');
+    const editButton = confirmacionModalElement.querySelector('.btn-secondary[data-bs-dismiss="modal"]');
+    const confirmButton = document.getElementById('confirmarRegistroBtn');
 
-    // Función para formatear la fecha a DD/MM/YYYY
-    const formatDate = (date) => {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    };
+    // Formateo de fecha: DD/MM/YYYY
+    const formatDate = (date) => `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
 
-    // Función para formatear la hora a HH:MM AM/PM
+    // Formateo de hora: HH:MM AM/PM
     const formatTime = (date) => {
         let hours = date.getHours();
         const minutes = date.getMinutes();
         const ampm = hours >= 12 ? 'p. m.' : 'a. m.';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // La hora '0' debe ser '12'
+        hours = hours % 12 || 12;
         return `${String(hours).padStart(1, ' ')}:${String(minutes).padStart(2, '0')} ${ampm}`;
     };
 
-    // Función para obtener la hora en formato HH:MM (24 horas)
-    const get24HourTime = (date) => {
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${hours}:${minutes}`;
-    };
+    // Obtener hora: HH:MM (24 horas)
+    const get24HourTime = (date) => `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 
-    // Función para actualizar la fecha y hora en los inputs
+    // Actualizar inputs de fecha y hora
     const actualizarFechaHoraInputs = () => {
         const ahora = new Date();
         fechaInput.value = ahora.toISOString().split('T')[0];
-        horaInput.value = get24HourTime(ahora); // Usar el formato de 24 horas para el input time
+        horaInput.value = get24HourTime(ahora);
     };
 
-    // Función para mostrar mensajes de error personalizados
+    // Mostrar mensaje de error
     const mostrarError = (input, mensaje) => {
-        const errorDiv = document.getElementById(`${input.id}-error`) || document.createElement('div');
-        errorDiv.id = `${input.id}-error`;
-        errorDiv.className = 'text-danger';
-        errorDiv.textContent = mensaje;
-        input.classList.add('is-invalid');
+        let errorDiv = document.getElementById(`${input.id}-error`) || Object.assign(document.createElement('div'), {
+            id: `${input.id}-error`,
+            className: 'text-danger',
+            textContent: mensaje
+        });
         input.parentNode.appendChild(errorDiv);
+        input.classList.add('is-invalid');
         input.setAttribute('aria-describedby', `${input.id}-error`);
     };
 
-    // Función para limpiar mensajes de error
+    // Limpiar mensaje de error
     const limpiarError = (input) => {
         const errorDiv = document.getElementById(`${input.id}-error`);
         if (errorDiv) {
@@ -77,41 +73,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Función para validar el formulario
-    const validarFormulario = () => {
-        let valido = true;
-        valido = validarCampo(nombreInput, 'El nombre es requerido.') && valido;
-        valido = validarSelect(tipoVisitaSelect, 'Selecciona un tipo de visita.') && valido;
-        valido = validarCampo(companiaInput, 'El nombre de la compañía es requerido.') && valido;
-        valido = validarCampo(motivoVisitaInput, 'El motivo de la visita es requerido.') && valido;
-        valido = validarCampo(visitaAInput, 'El nombre de la persona a visitar es requerido.') && valido;
-        valido = validarSelect(departamentoSelect, 'Selecciona un departamento.') && valido;
-        return valido;
-    };
+    // Validar campo de texto
+    const validarCampo = (input, mensajeError) => input.value.trim() === '' ? (mostrarError(input, mensajeError), false) : (limpiarError(input), true);
 
-    // Función auxiliar para validar campos de texto
-    const validarCampo = (input, mensajeError) => {
-        if (input.value.trim() === '') {
-            mostrarError(input, mensajeError);
-            return false;
-        } else {
-            limpiarError(input);
-            return true;
-        }
-    };
+    // Validar select
+    const validarSelect = (select, mensajeError) => select.value === 'Selecciona...' ? (mostrarError(select, mensajeError), false) : (limpiarError(select), true);
 
-    // Función auxiliar para validar selects
-    const validarSelect = (select, mensajeError) => {
-        if (select.value === 'Selecciona...') {
-            mostrarError(select, mensajeError);
-            return false;
-        } else {
-            limpiarError(select);
-            return true;
-        }
-    };
+    // Validar formulario
+    const validarFormulario = () =>
+        validarCampo(nombreInput, 'El nombre es requerido.') &&
+        validarSelect(tipoVisitaSelect, 'Selecciona un tipo de visita.') &&
+        validarCampo(companiaInput, 'El nombre de la compañía es requerido.') &&
+        validarCampo(motivoVisitaInput, 'El motivo de la visita es requerido.') &&
+        validarCampo(visitaAInput, 'El nombre de la persona a visitar es requerido.') &&
+        validarSelect(departamentoSelect, 'Selecciona un departamento.');
 
-    // Función para llenar los datos en el modal de confirmación
+    // Llenar datos en modal de confirmación
     const llenarModalConfirmacion = () => {
         const ahora = new Date();
         confirmacionFechaSpan.textContent = formatDate(ahora);
@@ -124,60 +101,62 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmacionDepartamentoSpan.textContent = departamentoSelect.options[departamentoSelect.selectedIndex].text;
     };
 
-    // Evento al hacer clic en el botón "Registrar Entrada"
-    registrarEntradaBtn.addEventListener('click', function (event) {
+    // Registrar Entrada: Validar y mostrar modal
+    registrarEntradaBtn.addEventListener('click', (event) => {
         event.preventDefault();
         if (validarFormulario()) {
             llenarModalConfirmacion();
-            confirmacionModal.show();
+            confirmacionModalElement.classList.contains('show') ?
+                (confirmacionModalElement.addEventListener('hidden.bs.modal', function onHidden() {
+                    confirmacionModal.show();
+                    confirmacionModalElement.removeEventListener('hidden.bs.modal', onHidden);
+                }), confirmacionModal.hide()) :
+                confirmacionModal.show();
         }
     });
 
-    // Evento al cerrar el modal
-    modalElement.addEventListener('hide.bs.modal', function (event) {
-        // No es necesario realizar ninguna acción específica al cerrar el modal para edición
+    // Antes de ocultar el modal: Quitar foco de botones
+    confirmacionModalElement.addEventListener('hide.bs.modal', () => {
+        [editButton, confirmButton].forEach(btn => document.activeElement === btn && btn.blur());
     });
 
-    // Evento al confirmar el registro en el modal
-    confirmarRegistroBtn.addEventListener('click', function () {
+    // Al cerrar el modal: Devolver foco al botón Registrar Entrada
+    confirmacionModalElement.addEventListener('closed.bs.modal', () => {
+        if (registrarEntradaBtn && !confirmacionModalElement.classList.contains('show')) {
+            registrarEntradaBtn.focus();
+        }
+    });
+
+    // Confirmar Registro: Ocultar modal, mostrar éxito, resetear form
+    confirmarRegistroBtn.addEventListener('click', () => {
         confirmacionModal.hide();
         mensajeExitoDiv.classList.remove('d-none');
         form.reset();
         form.classList.remove('was-validated');
-        setTimeout(() => {
-            mensajeExitoDiv.classList.add('d-none');
-        }, 3000);
+        setTimeout(() => mensajeExitoDiv.classList.add('d-none'), 3000);
     });
 
-    // Evento al hacer clic en el botón "Limpiar Datos"
-    limpiarDatosBtn.addEventListener('click', function() {
-        nombreInput.value = '';
-        tipoVisitaSelect.value = 'Selecciona...';
-        companiaInput.value = '';
-        motivoVisitaInput.value = '';
-        visitaAInput.value = '';
-        departamentoSelect.value = 'Selecciona...';
-
-        // Limpiar mensajes de error explícitamente
-        limpiarError(nombreInput);
-        limpiarError(tipoVisitaSelect);
-        limpiarError(companiaInput);
-        limpiarError(motivoVisitaInput);
-        limpiarError(visitaAInput);
-        limpiarError(departamentoSelect);
-
+    // Limpiar Datos: Resetear campos y errores
+    limpiarDatosBtn.addEventListener('click', () => {
+        [nombreInput, companiaInput, motivoVisitaInput, visitaAInput].forEach(input => input.value = '');
+        [tipoVisitaSelect, departamentoSelect].forEach(select => select.value = 'Selecciona...');
+        [nombreInput, tipoVisitaSelect, companiaInput, motivoVisitaInput, visitaAInput, departamentoSelect].forEach(limpiarError);
         form.classList.remove('was-validated');
     });
 
-    // Limpiar errores al cambiar los inputs
-    nombreInput.addEventListener('input', () => limpiarError(nombreInput));
-    tipoVisitaSelect.addEventListener('change', () => limpiarError(tipoVisitaSelect));
-    companiaInput.addEventListener('input', () => limpiarError(companiaInput));
-    motivoVisitaInput.addEventListener('input', () => limpiarError(motivoVisitaInput));
-    visitaAInput.addEventListener('input', () => limpiarError(visitaAInput));
-    departamentoSelect.addEventListener('change', () => limpiarError(departamentoSelect));
+    // Limpiar error al cambiar input
+    [nombreInput, companiaInput, motivoVisitaInput, visitaAInput].forEach(input => input.addEventListener('input', () => limpiarError(input)));
+    [tipoVisitaSelect, departamentoSelect].forEach(select => select.addEventListener('change', () => limpiarError(select)));
 
-    // Inicializar la fecha y hora en los inputs
+    // Inicializar fecha y hora, y actualizar cada segundo
     actualizarFechaHoraInputs();
     setInterval(actualizarFechaHoraInputs, 1000);
+
+    // Botón cerrar modal: Quitar foco y devolverlo a Registrar Entrada
+    if (modalCloseButton) {
+        modalCloseButton.addEventListener('click', () => {
+            modalCloseButton.blur();
+            registrarEntradaBtn && registrarEntradaBtn.focus();
+        });
+    }
 });
