@@ -14,27 +14,31 @@ document.addEventListener("DOMContentLoaded", () => {
     validarCredenciales();
   }
 
-  // Valida y verifica credenciales
+  // Valida y simula credenciales
   async function validarCredenciales() {
     const usuario = usuarioInput.value.trim();
     const password = passwordInput.value.trim();
 
     if (!usuario || !password) {
-      mostrarMensaje("Complete los campos.", "danger");
+      mostrarMensaje("¡Complete los campos!", "danger");
       return;
     }
 
     const spinner = crearSpinner();
     formulario.insertBefore(spinner, botonEnviar);
 
-    try {
-      const datos = await verificarCredenciales(usuario, password);
-      spinner.remove();
-      manejarRespuesta(datos);
-    } catch (error) {
-      spinner.remove();
-      manejarError(error);
+    // SIMULACIÓN DE VERIFICACIÓN
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula una espera
+    spinner.remove();
+    if (usuario === "usuario" && password === "contrasena") {
+      mostrarMensaje("¡Inicio de sesión exitoso!", "success");
+      setTimeout(() => {
+        window.location.href = "pages/panel.html";
+      }, 1500);
+    } else {
+      mostrarMensaje("¡Usuario o contraseña incorrectos!", "danger");
     }
+    // FIN DE SIMULACIÓN
   }
 
   // Crea el spinner (indicador de carga)
@@ -51,45 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
     spinner.setAttribute("role", "status");
     spinner.innerHTML = '<span class="visually-hidden">Cargando...</span>';
     return spinner;
-  }
-
-  // Verifica credenciales en el backend
-  async function verificarCredenciales(usuario, password) {
-    const respuesta = await fetch("http://localhost:3000/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usuario, password }),
-    });
-
-    if (!respuesta.ok) {
-      if (respuesta.status === 401) {
-        return respuesta.json(); // Credenciales incorrectas
-      }
-      throw new Error(`Error HTTP: ${respuesta.status}`); // Otros errores HTTP
-    }
-
-    return respuesta.json(); // Inicio de sesión exitoso
-  }
-
-  // Maneja la respuesta del backend
-  function manejarRespuesta(datos) {
-    if (datos.success) {
-      mostrarMensaje("Inicio de sesión exitoso. Redirigiendo...", "success");
-      setTimeout(() => {
-        window.location.href = "pages/panel.html";
-      }, 1500);
-    } else {
-      mostrarMensaje(
-        datos.message || "Usuario o contraseña incorrectos.",
-        "danger"
-      );
-    }
-  }
-
-  // Maneja errores
-  function manejarError(error) {
-    console.error("Error al verificar credenciales:", error);
-    mostrarMensaje(`Error: ${error.message}`, "danger");
   }
 
   // Muestra mensajes de alerta
