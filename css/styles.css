@@ -17,6 +17,30 @@ body {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilos para el encabezado h3 dentro del contenedor de login */
+
+.login-container h3 {
+    font-family: 'Roboto Slab', serif;
+    font-weight: 800;
+}
+
+/* Estilos para las etiquetas (labels) dentro del contenedor de login */
+
+.login-container label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+}
+
+/* Estilos para los campos de texto (input type="text"), contraseñas (input type="password") y 
+botones dentro del contenedor de login */
+
+.login-container input[type="text"],
+.login-container input[type="password"],
+.login-container button {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+}
+
 /* Estilos del texto con gradiente */
 
 .text-gradient {
