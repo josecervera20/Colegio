@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     validarCredenciales();
   }
 
-  // Valida y simula credenciales
+  // Valida y envía credenciales
   async function validarCredenciales() {
     const usuario = usuarioInput.value.trim();
     const password = passwordInput.value.trim();
@@ -27,21 +27,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const spinner = crearSpinner();
     formulario.insertBefore(spinner, botonEnviar);
 
-    // SIMULACIÓN DE VERIFICACIÓN
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simula una espera
-    spinner.remove();
-    if (usuario === "usuario" && password === "contrasena") {
-      mostrarMensaje("¡Inicio de sesión exitoso!", "success");
-      setTimeout(() => {
-        window.location.href = "pages/panel.html";
-      }, 1500);
-    } else {
-      mostrarMensaje("¡Usuario o contraseña incorrectos!", "danger");
+    try {
+      const respuesta = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuario, password }),
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Retraso del spinner
+      spinner.remove();
+      const datos = await respuesta.json();
+
+      if (respuesta.ok) {
+        mostrarMensaje("¡Bienvenido! Inicio de sesión exitoso.", "success");
+        setTimeout(() => {
+          window.location.href = "pages/panel.html";
+        }, 2000); // Retraso de redirección
+      } else {
+        mostrarMensaje(datos.error || "Error al iniciar sesión.", "danger");
+      }
+    } catch (error) {
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Retraso del spinner
+      spinner.remove();
+      console.error("Error al conectar:", error);
+      mostrarMensaje("¡Error al conectar!", "danger");
     }
-    // FIN DE SIMULACIÓN
   }
 
-  // Crea el spinner (indicador de carga)
+  // Crea el spinner
   function crearSpinner() {
     const spinner = document.createElement("div");
     spinner.classList.add(
@@ -57,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return spinner;
   }
 
-  // Muestra mensajes de alerta
+  // Muestra mensaje de alerta
   function mostrarMensaje(mensaje, tipo) {
     const clasesMensaje = { success: "alert-success", danger: "alert-danger" };
     const mensajeDiv = document.createElement("div");

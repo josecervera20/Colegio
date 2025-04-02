@@ -1,0 +1,5 @@
+node_modules/
+backend/node_modules/
+backend/.env
+.vscode/
+# Otros archivos o carpetas que quieras ignorar
