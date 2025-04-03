@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const registroForm = document.getElementById("registroForm");
   const nuevoUsuarioInput = document.getElementById("nuevoUsuario");
   const nuevaPasswordInput = document.getElementById("nuevaPassword");
+  const confirmarPasswordInput = document.getElementById("confirmarPassword");
   const botonRegistrar = registroForm.querySelector('button[type="submit"]');
 
   // Evento de envío del formulario de registro
@@ -18,12 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
   async function registrarUsuario() {
     const usuario = nuevoUsuarioInput.value.trim();
     const password = nuevaPasswordInput.value.trim();
+    const confirmarPassword = confirmarPasswordInput.value.trim();
 
-    if (!usuario || !password) {
-      mostrarMensajeRegistro(
-        "Por favor, ingrese un nombre de usuario y una contraseña.",
-        "danger"
-      );
+    if (!usuario || !password || !confirmarPassword) {
+      mostrarMensajeRegistro("Por favor, complete todos los campos.", "danger");
+      return;
+    }
+
+    if (password !== confirmarPassword) {
+      mostrarMensajeRegistro("Las contraseñas no coinciden.", "danger");
       return;
     }
 
