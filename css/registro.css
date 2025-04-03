@@ -8,9 +8,9 @@ body {
     height: 100vh;
 }
 
-/* Estilos del contenedor de login */
+/* Estilos del contenedor de registro de usuarios */
 
-.login-container {
+.registro-container {
     background: white;
     padding: 2rem;
     border-radius: 10px;
@@ -26,27 +26,27 @@ body {
     font-weight: bold;
 }
 
-/* Estilos para el encabezado h3 dentro del contenedor de login */
+/* Estilos para el encabezado h3 dentro del contenedor de registro */
 
-.login-container h3 {
+.registro-container h3 {
     font-family: 'Roboto Slab', serif;
     font-weight: 800;
 }
 
-/* Estilos para las etiquetas (labels) dentro del contenedor de login y para los elementos p */
+/* Estilos para las etiquetas (labels) dentro del contenedor de registro y para los elementos p */
 
-.login-container label,
+.registro-container label,
 p {
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
 }
 
 /* Estilos para los campos de texto (input type="text"), contraseñas (input type="password") y 
-botones dentro del contenedor de login */
+botones dentro del contenedor de registro */
 
-.login-container input[type="text"],
-.login-container input[type="password"],
-.login-container button {
+.registro-container input[type="text"],
+.registro-container input[type="password"],
+.registro-container button {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
 }
