@@ -17,15 +17,6 @@ body {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos del texto con gradiente */
-
-.text-gradient {
-    background: linear-gradient(to right, black, red, #eeba0b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: bold;
-}
-
 /* Estilos para el encabezado h3 dentro del contenedor de login */
 
 .login-container h3 {
@@ -33,10 +24,9 @@ body {
     font-weight: 800;
 }
 
-/* Estilos para las etiquetas (labels) dentro del contenedor de login y para los elementos p */
+/* Estilos para las etiquetas (labels) dentro del contenedor de login */
 
-.login-container label,
-p {
+.login-container label {
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
 }
@@ -49,6 +39,15 @@ botones dentro del contenedor de login */
 .login-container button {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
+}
+
+/* Estilos del texto con gradiente */
+
+.text-gradient {
+    background: linear-gradient(to right, black, red, #eeba0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
 }
 
 /* Estilos del texto del grupo de entrada */
@@ -77,7 +76,6 @@ button[type="submit"] {
 }
 
 /* Estilos base para los elementos alert de Bootstrap */
-
 .alert {
     font-family: 'Open Sans', sans-serif;
     position: absolute;
@@ -86,16 +84,14 @@ button[type="submit"] {
     transform: translate(-50%, -50%);
     font-weight: 500;
     letter-spacing: 0.05em;
-}
-
-/* Estilos específicos para la alerta de éxito */
-
-.alert-success {
+  }
+  
+  /* Estilos específicos para la alerta de éxito */
+  .alert-success {
     color: #155724;
-}
-
-/* Estilos específicos para la alerta de error */
-
-.alert-danger {
+  }
+  
+  /* Estilos específicos para la alerta de error */
+  .alert-danger {
     color: #842029;
-}
+  }
