@@ -20,7 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = passwordInput.value.trim();
 
     if (!usuario || !password) {
-      mostrarMensaje("¡Complete los campos!", "danger");
+      mostrarMensaje(
+        "¡Por favor, introduce tu usuario y contraseña!",
+        "danger"
+      );
       return;
     }
 
@@ -44,12 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "pages/panel.html";
         }, 2000); // Retraso de redirección
       } else {
-        mostrarMensaje(datos.error || "Error al iniciar sesión.", "danger");
+        mostrarMensaje(datos.error, "danger"); // Usando directamente datos.error
       }
     } catch (error) {
       await new Promise((resolve) => setTimeout(resolve, 500)); // Retraso del spinner
       spinner.remove();
-      console.error("Error al conectar con el servidor:", error);
+      console.error("Error al conectar:", error);
       mostrarMensaje("¡Error al conectar con el servidor!", "danger");
     }
   }

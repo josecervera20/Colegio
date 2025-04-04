@@ -22,12 +22,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmarPassword = confirmarPasswordInput.value.trim();
 
     if (!usuario || !password || !confirmarPassword) {
-      mostrarMensajeRegistro("Por favor, complete todos los campos.", "danger");
+      mostrarMensajeRegistro(
+        "¡Por favor, proporciona un nombre de usuario y una contraseña!",
+        "danger"
+      );
       return;
     }
 
     if (password !== confirmarPassword) {
-      mostrarMensajeRegistro("Las contraseñas no coinciden.", "danger");
+      mostrarMensajeRegistro(
+        "¡Las contraseñas que has ingresado no coinciden. Por favor, verifica que sean idénticas!",
+        "danger"
+      );
       return;
     }
 
@@ -50,7 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
         registroForm.reset(); // Limpiar el formulario
       } else {
         mostrarMensajeRegistro(
-          datos.error || "Error al registrar el usuario.",
+          datos.error ||
+            "¡Hubo un problema al registrar tu cuenta. Por favor, inténtalo de nuevo más tarde!",
           "danger"
         );
       }
@@ -58,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       await new Promise((resolve) => setTimeout(resolve, 500)); // Retraso del spinner en caso de error
       spinner.remove();
       console.error("Error al conectar con el servidor:", error);
-      mostrarMensajeRegistro("Error al conectar con el servidor.", "danger");
+      mostrarMensajeRegistro("¡Error al conectar con el servidor!", "danger");
     }
   }
 
