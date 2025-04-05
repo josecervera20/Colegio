@@ -42,7 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const datos = await respuesta.json();
 
       if (respuesta.ok) {
+        // Inicio de sesión exitoso
         mostrarMensaje("¡Bienvenido! Inicio de sesión exitoso.", "success");
+        // Almacenar el token JWT recibido del backend
+        localStorage.setItem("token", datos.token); // Guardar el token en localStorage
         setTimeout(() => {
           window.location.href = "pages/panel.html";
         }, 2000); // Retraso de redirección
