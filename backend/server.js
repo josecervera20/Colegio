@@ -5,6 +5,8 @@ const dotenv = require("dotenv");
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const registroController = require("./controllers/registroController");
+const authMiddleware = require("./middleware/authMiddleware");
 
 dotenv.config();
 
@@ -19,6 +21,7 @@ app.use(cors());
 // Usar las rutas
 app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes); // Para /api/usuarios y /api/panel
+app.post("/api/registrar-entrada", authMiddleware.verificarToken, registroController.registrarEntrada); // Ruta para registrar la entrada del formulario
 
 // Ruta principal (se mantiene aquí)
 app.get("/", (req, res) => {
