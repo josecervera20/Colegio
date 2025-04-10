@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const registroController = require("./controllers/registroController");
 const authMiddleware = require("./middleware/authMiddleware");
+const estadisticasController = require("./controllers/estadisticasController");
 
 dotenv.config();
 
@@ -22,6 +23,11 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes); // Para /api/usuarios y /api/panel
 app.post("/api/registrar-entrada", authMiddleware.verificarToken, registroController.registrarEntrada); // Ruta para registrar la entrada del formulario
+
+// Rutas protegidas para obtener las estadísticas
+app.get("/api/estadisticas/entradas-por-dia", authMiddleware.verificarToken, estadisticasController.obtenerEntradasPorDia);
+app.get("/api/estadisticas/tipos-visitante", authMiddleware.verificarToken, estadisticasController.obtenerTiposVisitante);
+app.get("/api/estadisticas/departamentos-visitados", authMiddleware.verificarToken, estadisticasController.obtenerDepartamentosVisitados);
 
 // Ruta principal (se mantiene aquí)
 app.get("/", (req, res) => {

@@ -40,37 +40,58 @@
             </div>
         </div>
     </nav>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <form class="row row-cols-lg-auto g-3 align-items-center">
-            <div class="col-12 d-flex justify-content-center">
-                <label class="form-label" for="dia">Selecciona una fecha:</label>
+
+    <!-- Contenedor principal -->
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Estadísticas de Entradas</h2>
+
+        <div class="mb-4">
+            <form class="row row-cols-lg-auto g-3 align-items-center justify-content-center" id="filtro-fecha">
+                <div class="col-12">
+                    <label class="form-label" for="fecha-seleccionada">Filtrar por fecha:</label>
+                </div>
+                <div class="col-12">
+                    <input type="date" class="form-control" id="fecha-seleccionada" name="fecha-seleccionada">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Consultar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Entradas por Día</h5>
+                        <canvas id="entradas-por-dia-chart"></canvas>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-12">
-                <select class="form-select" id="dia" name="dia" required>
-                    <option selected disabled value="">Día</option>
-                </select>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Tipos de Visitante</h5>
+                        <canvas id="tipos-visitante-chart"></canvas>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-12">
-                <select class="form-select" id="mes" name="mes" required>
-                    <option selected disabled value="">Mes</option>
-                </select>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Departamentos Más Visitados</h5>
+                        <canvas id="departamentos-visitados-chart"></canvas>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-12">
-                <select class="form-select" id="anio" name="anio" required>
-                    <option selected disabled value="">Año</option>
-                </select>
-            </div>
-
-            <div class="col-12 d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary">Consultar</button>
-            </div>
-        </form>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/estadisticas.js"></script>
 </body>
 
 </html>
