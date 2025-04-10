@@ -20,6 +20,7 @@ body {
 }
 
 .navbar-brand {
+    font-family: 'Roboto Slab', serif;
     font-weight: 700;
     font-size: 1.4rem;
 }
@@ -27,6 +28,42 @@ body {
 .navbar-brand i {
     color: #433b3b;
     margin-right: 0.3rem;
+}
+
+.btn-danger.rounded-pill {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+}
+
+/* Estilos para el encabezado h2 dentro del contenedor */
+
+.container h2 {
+    font-family: 'Roboto Slab', serif;
+    font-weight: 700;
+}
+
+/* Estilos para las etiquetas label dentro del contenedor */
+
+.container label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+}
+
+/* Estilos para los encabezados h5 dentro del contenedor*/
+
+.container h5 {
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Estilos para los elementos inputs de tipo date y para los elementos button
+    que se encuentran dentro del contenedor */
+
+.container input[type="date"],
+.container button {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
 }
 
 /* Adaptable (Responsivo) */
