@@ -2,13 +2,29 @@ const pool = require("../config/database");
 
 const obtenerEntradasPorDia = async (req, res) => {
   try {
-    const query = `
-            SELECT DATE(fecha) AS dia, COUNT(*) AS total
-            FROM registros_entrada
-            GROUP BY DATE(fecha)
-            ORDER BY DATE(fecha) DESC;
-        `;
-    const [resultados] = await pool.execute(query);
+    const { fecha } = req.query;
+    let query = '';
+    let params = [];
+
+    if (fecha) {
+      query = `
+        SELECT DATE(fecha) AS dia, COUNT(*) AS total
+        FROM registros_entrada
+        WHERE DATE(fecha) = ?
+        GROUP BY DATE(fecha)
+        ORDER BY DATE(fecha) DESC;
+      `;
+      params.push(fecha);
+    } else {
+      query = `
+        SELECT DATE(fecha) AS dia, COUNT(*) AS total
+        FROM registros_entrada
+        GROUP BY DATE(fecha)
+        ORDER BY DATE(fecha) DESC;
+      `;
+    }
+
+    const [resultados] = await pool.execute(query, params);
     res.status(200).json(resultados);
   } catch (error) {
     console.error("Error al obtener las entradas por día:", error);
@@ -19,11 +35,11 @@ const obtenerEntradasPorDia = async (req, res) => {
 const obtenerTiposVisitante = async (req, res) => {
   try {
     const query = `
-            SELECT tipo_visita, COUNT(*) AS total
-            FROM registros_entrada
-            GROUP BY tipo_visita
-            ORDER BY total DESC;
-        `;
+      SELECT tipo_visita, COUNT(*) AS total
+      FROM registros_entrada
+      GROUP BY tipo_visita
+      ORDER BY total DESC;
+    `;
     const [resultados] = await pool.execute(query);
     res.status(200).json(resultados);
   } catch (error) {
@@ -35,12 +51,12 @@ const obtenerTiposVisitante = async (req, res) => {
 const obtenerDepartamentosVisitados = async (req, res) => {
   try {
     const query = `
-            SELECT departamento, COUNT(*) AS total
-            FROM registros_entrada
-            GROUP BY departamento
-            ORDER BY total DESC
-            LIMIT 5; -- Limitar a los 5 departamentos más visitados
-        `;
+      SELECT departamento, COUNT(*) AS total
+      FROM registros_entrada
+      GROUP BY departamento
+      ORDER BY total DESC
+      LIMIT 5;
+    `;
     const [resultados] = await pool.execute(query);
     res.status(200).json(resultados);
   } catch (error) {
