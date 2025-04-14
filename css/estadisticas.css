@@ -6,8 +6,7 @@ body {
     margin: 0;
 }
 
-/* Barra de navegacion */
-
+/* Barra de navegación */
 .navbar {
     padding: 1rem;
     background-color: #ffffff;
@@ -35,21 +34,12 @@ body {
     font-weight: 400;
 }
 
-/* Estilos para el encabezado h2 dentro del contenedor */
-
+/* Estilos para los encabezados dentro del contenedor */
 .container h2 {
     font-family: 'Roboto Slab', serif;
     font-weight: 700;
+    text-align: center;
 }
-
-/* Estilos para las etiquetas label dentro del contenedor */
-
-.container label {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 400;
-}
-
-/* Estilos para los encabezados h5 dentro del contenedor*/
 
 .container h5 {
     font-family: 'Lato', sans-serif;
@@ -57,19 +47,46 @@ body {
     text-align: center;
 }
 
-/* Estilos para los elementos inputs de tipo date y para los elementos button
-    que se encuentran dentro del contenedor */
+/* Estilos para las etiquetas label dentro del contenedor */
+.container label {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+}
 
+/* Estilos para inputs de tipo date y botones dentro del contenedor */
 .container input[type="date"],
 .container button {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
 }
 
-/* Adaptable (Responsivo) */
+/* Contenedor para formularios */
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+/* Efecto hover para las tarjetas */
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+/* Media queries para adaptabilidad */
 @media screen and (max-width: 767px) {
     .navbar-brand {
         display: none;
+        /* Escondemos el logo en pantallas pequeñas */
+    }
+
+    .container input[type="date"] {
+        max-width: 250px;
+        text-align: center;
+    }
+
+    /* Estilos para el formulario */
+    .form-wrapper form {
+        width: 100%;
     }
 }

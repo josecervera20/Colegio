@@ -8,7 +8,7 @@
     <!-- Titulo -->
     <title>Estadísticas - Colegio Once México</title>
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../assets/estadisticas.png">
+    <link rel="icon" href="../assets/estadisticas.png" type="image/x-icon">
     <!-- CSS -->
     <link rel="stylesheet" href="../css/estadisticas.css">
     <!-- Bootstrap -->
@@ -18,11 +18,11 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100..900&family=Montserrat:wght@100..900&family=Open+Sans:wght@300..800&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Barra de navegacion -->
+    <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-md navbar-light">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-toggler"
@@ -47,22 +47,27 @@
 
     <!-- Contenedor principal -->
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Estadísticas de Entradas</h2>
+        <h2 class="mb-4">Estadísticas de Entradas</h2>
 
+        <!-- Formulario de filtro por fecha -->
         <div class="mb-4">
-            <form class="row row-cols-lg-auto g-3 align-items-center justify-content-center" id="filtro-fecha">
-                <div class="col-12">
-                    <label class="form-label" for="fecha-seleccionada">Filtrar por fecha:</label>
-                </div>
-                <div class="col-12">
-                    <input type="date" class="form-control" id="fecha-seleccionada" name="fecha-seleccionada">
-                </div>
-                <div class="col-12 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary">Consultar</button>
-                </div>
-            </form>
+            <div class="form-wrapper">
+                <form id="filtro-fecha" class="row row-cols-lg-auto g-3 align-items-center justify-content-center">
+                    <div class="col-12">
+                        <label for="fecha-seleccionada" class="form-label d-flex justify-content-center">Filtrar por
+                            fecha:</label>
+                    </div>
+                    <div class="col-12 d-flex justify-content-center">
+                        <input type="date" class="form-control" id="fecha-seleccionada" name="fecha-seleccionada">
+                    </div>
+                    <div class="col-12 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">Consultar</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
+        <!-- Gráficas -->
         <div class="row">
             <div class="col-md-6 mb-4">
                 <div class="card">
@@ -93,6 +98,7 @@
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../js/estadisticas.js"></script>
