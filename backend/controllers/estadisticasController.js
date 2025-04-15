@@ -1,91 +1,54 @@
-const pool = require("../config/database");
+// Importa las funciones del servicio de estadísticas
+const {
+  obtenerEntradasPorDia,
+  obtenerTiposVisitante,
+  obtenerDepartamentosVisitados,
+} = require("../services/estadisticasService");
 
-// Función reutilizable para ejecutar consultas
-const ejecutarConsulta = async (res, query, params, mensajeError) => {
+/**
+ * Controlador para obtener estadísticas de entradas por día.
+ */
+const getEntradasPorDia = async (req, res) => {
   try {
-    const [resultados] = await pool.execute(query, params);
+    const { fecha } = req.query;
+    const resultados = await obtenerEntradasPorDia(fecha);
     res.status(200).json(resultados);
   } catch (error) {
-    console.error(`${mensajeError}:`, error);
+    console.error("Error al obtener las entradas por día:", error);
     res.status(500).json({ error: "Error al obtener las estadísticas." });
   }
 };
 
-// Generador de consulta con opción de alias personalizado
-const generarConsulta = ({ campo, alias, agrupador, filtroFecha, limite }) => {
-  const condicion = filtroFecha ? "WHERE DATE(fecha) = ?" : "";
-  const parametros = filtroFecha ? [filtroFecha] : [];
-
-  let query = `
-    SELECT ${campo} AS ${alias}, COUNT(*) AS total
-    FROM registros_entrada
-    ${condicion}
-    GROUP BY ${agrupador}
-    ORDER BY total DESC
-    ${limite ? `LIMIT ${limite}` : ""};
-  `;
-
-  return { query, parametros };
+/**
+ * Controlador para obtener estadísticas de tipos de visitante.
+ */
+const getTiposVisitante = async (req, res) => {
+  try {
+    const { fecha } = req.query;
+    const resultados = await obtenerTiposVisitante(fecha);
+    res.status(200).json(resultados);
+  } catch (error) {
+    console.error("Error al obtener los tipos de visitante:", error);
+    res.status(500).json({ error: "Error al obtener las estadísticas." });
+  }
 };
 
-// Entradas por día
-const obtenerEntradasPorDia = async (req, res) => {
-  const { fecha } = req.query;
-  const query = `
-    SELECT DATE(fecha) AS dia, COUNT(*) AS total
-    FROM registros_entrada
-    ${fecha ? "WHERE DATE(fecha) = ?" : ""}
-    GROUP BY DATE(fecha)
-    ORDER BY DATE(fecha) DESC;
-  `;
-  const params = fecha ? [fecha] : [];
-  await ejecutarConsulta(
-    res,
-    query,
-    params,
-    "Error al obtener las entradas por día"
-  );
-};
-
-// Tipos de visitante
-const obtenerTiposVisitante = async (req, res) => {
-  const { fecha } = req.query;
-  const { query, parametros } = generarConsulta({
-    campo: "tipo_visita",
-    alias: "tipo_visita",
-    agrupador: "tipo_visita",
-    filtroFecha: fecha,
-  });
-
-  await ejecutarConsulta(
-    res,
-    query,
-    parametros,
-    "Error al obtener los tipos de visitante"
-  );
-};
-
-// Departamentos más visitados
-const obtenerDepartamentosVisitados = async (req, res) => {
-  const { fecha } = req.query;
-  const { query, parametros } = generarConsulta({
-    campo: "departamento",
-    alias: "departamento",
-    agrupador: "departamento",
-    filtroFecha: fecha,
-    limite: 5,
-  });
-
-  await ejecutarConsulta(
-    res,
-    query,
-    parametros,
-    "Error al obtener los departamentos más visitados"
-  );
+/**
+ * Controlador para obtener los departamentos más visitados.
+ */
+const getDepartamentosVisitados = async (req, res) => {
+  try {
+    const { fecha } = req.query;
+    const resultados = await obtenerDepartamentosVisitados(fecha);
+    res.status(200).json(resultados);
+  } catch (error) {
+    console.error("Error al obtener los departamentos más visitados:", error);
+    res.status(500).json({ error: "Error al obtener las estadísticas." });
+  }
 };
 
 module.exports = {
-  obtenerEntradasPorDia,
-  obtenerTiposVisitante,
-  obtenerDepartamentosVisitados,
+  getEntradasPorDia,
+  getTiposVisitante,
+  getDepartamentosVisitados,
 };
