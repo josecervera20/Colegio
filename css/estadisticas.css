@@ -73,6 +73,12 @@ body {
     transition: box-shadow 0.3s ease-in-out;
 }
 
+/* Estilos para la alerta de error */
+.alert-danger {
+    font-family: 'Open Sans', sans-serif;
+    color: #842029;
+}
+
 /* Media queries para adaptabilidad */
 @media screen and (max-width: 767px) {
     .navbar-brand {

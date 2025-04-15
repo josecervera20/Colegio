@@ -3,51 +3,95 @@ document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   if (!token) return (window.location.href = "../index.html");
 
-  // Obtener referencias a elementos del DOM
+  // Elementos del formulario de filtro por fecha
   const filtroFechaForm = document.getElementById("filtro-fecha");
   const fechaSeleccionadaInput = document.getElementById("fecha-seleccionada");
 
-  // IDs de los canvas de las gráficas
+  // IDs de los canvas para las gráficas
   const canvasIds = {
     entradas: "entradas-por-dia-chart",
     tipos: "tipos-visitante-chart",
     departamentos: "departamentos-visitados-chart",
   };
 
-  const charts = {}; // Almacena instancias de gráficas Chart.js
+  // Objeto para almacenar las instancias de las gráficas
+  const charts = {};
 
-  // Establecer la fecha actual como valor predeterminado del input
+  // Establecer fecha de hoy por defecto en el input de fecha
   const today = new Date().toISOString().split("T")[0];
   if (fechaSeleccionadaInput) fechaSeleccionadaInput.value = today;
 
-  // Función para realizar una petición con fetch y manejo de errores
-  const fetchData = async (url, errorMessage) => {
+  // Crea un spinner centrado dentro de la card
+  const crearSpinner = () => {
+    const spinnerWrapper = document.createElement("div");
+    spinnerWrapper.className =
+      "d-flex justify-content-center align-items-center w-100 h-100 position-absolute top-0 start-0 bg-white bg-opacity-75";
+    spinnerWrapper.style.zIndex = 10;
+
+    const spinner = document.createElement("div");
+    spinner.className = "spinner-border text-secondary";
+    spinner.setAttribute("role", "status");
+    spinner.innerHTML = '<span class="visually-hidden">Cargando...</span>';
+
+    spinnerWrapper.appendChild(spinner);
+    return spinnerWrapper;
+  };
+
+  // Crea un mensaje de alerta centrado dentro de la card
+  const crearMensaje = (mensaje, tipo = "info") => {
+    const mensajeWrapper = document.createElement("div");
+    mensajeWrapper.className = `alert alert-${tipo} text-center position-absolute top-50 start-50 translate-middle w-75`;
+    mensajeWrapper.textContent = mensaje;
+    mensajeWrapper.style.zIndex = 10;
+    return mensajeWrapper;
+  };
+
+  // Función para obtener datos desde el backend
+  const fetchData = async (url, errorMessage, container) => {
+    const spinner = crearSpinner();
+    container.appendChild(spinner);
+
     try {
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      // Simula un tiempo de espera para mostrar el spinner
+      await new Promise((r) => setTimeout(r, 700));
+      spinner.remove();
+
       if (!response.ok) throw new Error(`${errorMessage}: ${response.status}`);
-      return await response.json();
+
+      const data = await response.json();
+
+      return data;
     } catch (error) {
       console.error(error);
-      return [];
+      spinner.remove();
+
+      const alert = crearMensaje(
+        "¡Error al conectar con el servidor!",
+        "danger"
+      );
+      container.appendChild(alert);
+      return null;
     }
   };
 
-  // Crea una gráfica Chart.js si el canvas existe
+  // Crea el gráfico con Chart.js
   const createChart = (id, type, data, options) => {
     const ctx = document.getElementById(id)?.getContext("2d");
     return ctx ? new Chart(ctx, { type, data, options }) : null;
   };
 
-  // Genera una lista de colores aleatorios en formato rgba
+  // Genera colores aleatorios para los gráficos
   const generateColors = (count, opacity = 0.7) =>
     Array.from({ length: count }, () => {
       const [r, g, b] = [0, 0, 0].map(() => Math.floor(Math.random() * 255));
       return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     });
 
-  // Formatea una fecha a dd/mm/yyyy
+  // Formatea la fecha en formato dd/mm/yyyy
   const formatDate = (date) => {
     const d = new Date(date);
     return isNaN(d)
@@ -57,10 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ).padStart(2, "0")}/${d.getFullYear()}`;
   };
 
-  /**
-   * Renderiza una gráfica reutilizable con Chart.js
-   * @param {Object} config - Configuración para renderizar la gráfica
-   */
+  // Renderiza un gráfico individual
   const renderChart = async ({
     id,
     url,
@@ -69,11 +110,37 @@ document.addEventListener("DOMContentLoaded", () => {
     labelKey,
     valueKey,
     options,
-    formatLabels = false, // Indicador opcional para formatear etiquetas
+    formatLabels = false,
   }) => {
-    const data = await fetchData(url, `Error al obtener datos para ${id}`);
+    const canvas = document.getElementById(id);
+    const container = canvas.closest(".card");
 
-    const bg = generateColors(data.length); // Colores de fondo
+    // Eliminar cualquier spinner o mensaje previo
+    container.querySelectorAll(".position-absolute").forEach((e) => e.remove());
+
+    // Destruir gráfico anterior si existe
+    if (charts[id]) {
+      charts[id].destroy();
+      charts[id] = null;
+    }
+
+    // Obtener los datos de la API
+    const data = await fetchData(
+      url,
+      `Error al obtener datos para ${id}`,
+      container
+    );
+    if (data === null) return;
+
+    // Mostrar mensaje si no hay datos
+    if (!data.length) {
+      const mensaje = crearMensaje("No hay datos para esta fecha.", "danger");
+      container.appendChild(mensaje);
+      return;
+    }
+
+    // Construir los datos y colores para el gráfico
+    const bg = generateColors(data.length);
     const labels = data.map((d) =>
       formatLabels ? formatDate(d[labelKey]) : d[labelKey]
     );
@@ -91,21 +158,15 @@ document.addEventListener("DOMContentLoaded", () => {
       ],
     };
 
-    // Destruir gráfica previa si existe
-    if (charts[id]) charts[id].destroy();
-
-    // Crear y guardar nueva instancia de la gráfica
+    // Crear y guardar la instancia del gráfico
     charts[id] = createChart(id, type, chartData, options);
   };
 
-  /**
-   * Renderiza todas las gráficas con o sin filtro de fecha
-   * @param {string} fecha - Fecha opcional para filtrar datos
-   */
+  // Renderiza todos los gráficos según la fecha
   const renderAllCharts = (fecha = "") => {
     const q = fecha ? `?fecha=${fecha}` : "";
 
-    // Gráfica de entradas por día
+    // Gráfico de entradas por día
     renderChart({
       id: canvasIds.entradas,
       url: `http://localhost:3000/api/estadisticas/entradas-por-dia${q}`,
@@ -113,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       label: "Número de Entradas",
       labelKey: "dia",
       valueKey: "total",
-      formatLabels: true, // Formatear fechas para eje X
+      formatLabels: true,
       options: {
         responsive: true,
         maintainAspectRatio: true,
@@ -141,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
 
-    // Gráfica de tipos de visitante
+    // Gráfico de tipos de visitante
     renderChart({
       id: canvasIds.tipos,
       url: `http://localhost:3000/api/estadisticas/tipos-visitante${q}`,
@@ -166,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
 
-    // Gráfica de departamentos más visitados
+    // Gráfico de departamentos visitados
     renderChart({
       id: canvasIds.departamentos,
       url: `http://localhost:3000/api/estadisticas/departamentos-visitados${q}`,
@@ -191,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Escuchar el envío del formulario para filtrar por fecha
+  // Escucha el formulario de filtrado por fecha
   if (filtroFechaForm) {
     filtroFechaForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -199,6 +260,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Renderizar todas las gráficas al cargar la página (sin filtro)
+  // Renderizar gráficas al cargar la página
   renderAllCharts();
 });
