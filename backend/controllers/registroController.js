@@ -1,10 +1,10 @@
-// Importa la conexión a la base de datos
-const pool = require("../config/database");
+// Importa la función de servicio que maneja la inserción del registro
+const { insertarRegistroEntrada } = require("../services/registroService");
 
-// Función para registrar la entrada
+// Controlador para manejar el registro de entrada de visitantes
 const registrarEntrada = async (req, res) => {
   try {
-    // Accede a los datos del formulario que vienen en req.body
+    // Extrae los datos del cuerpo de la solicitud
     const {
       fecha,
       hora,
@@ -16,7 +16,7 @@ const registrarEntrada = async (req, res) => {
       departamento,
     } = req.body;
 
-    // **Validación de datos en el backend (¡Importante!)**
+    // Verifica que los campos obligatorios estén presentes
     if (
       !fecha ||
       !hora ||
@@ -26,21 +26,13 @@ const registrarEntrada = async (req, res) => {
       !visitaA ||
       !departamento
     ) {
-      return res
-        .status(400)
-        .json({
-          error: "Todos los campos obligatorios deben ser proporcionados.",
-        });
+      return res.status(400).json({
+        error: "Todos los campos obligatorios deben ser proporcionados.",
+      });
     }
 
-    // Prepara la consulta SQL para insertar los datos en la tabla
-    const query = `
-            INSERT INTO registros_entrada (fecha, hora, nombre, tipo_visita, compania, motivo_visita, visita_a, departamento)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-
-    // Ejecuta la consulta a la base de datos
-    const [result] = await pool.execute(query, [
+    // Llama al servicio que inserta el registro en la base de datos
+    const result = await insertarRegistroEntrada({
       fecha,
       hora,
       nombre,
@@ -49,7 +41,7 @@ const registrarEntrada = async (req, res) => {
       motivoVisita,
       visitaA,
       departamento,
-    ]);
+    });
 
     // Verifica si la inserción fue exitosa
     if (result.affectedRows > 0) {
@@ -67,5 +59,5 @@ const registrarEntrada = async (req, res) => {
   }
 };
 
-// Exporta la función del controlador
+// Exporta el controlador
 module.exports = { registrarEntrada };
