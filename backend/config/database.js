@@ -1,21 +1,21 @@
-// Carga las variables de entorno definidas en el archivo .env
+// Carga las variables de entorno desde el archivo .env
 require("dotenv").config();
 
 const mysql = require("mysql2");
 
-// Configuración de la base de datos usando variables de entorno
+// Configuración del pool de conexiones a la base de datos
 const dbConfig = {
-  host: process.env.DB_HOST, // Dirección del servidor de base de datos
-  user: process.env.DB_USER, // Usuario de la base de datos
-  password: process.env.DB_PASSWORD, // Contraseña del usuario
-  database: process.env.DB_DATABASE, // Nombre de la base de datos
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   connectionLimit: process.env.DB_CONNECTION_LIMIT
-    ? parseInt(process.env.DB_CONNECTION_LIMIT) // Límite de conexiones en el pool
-    : 10, // Valor por defecto si no está definido
+    ? parseInt(process.env.DB_CONNECTION_LIMIT)
+    : 10, // Usa 10 como valor por defecto si no se especifica
 };
 
-// Crear un pool de conexiones para mejorar el rendimiento
+// Crea el pool de conexiones con soporte para Promesas
 const pool = mysql.createPool(dbConfig);
 
-// Exportar el pool de conexiones usando promesas
+// Exporta el pool para poder usarlo con async/await
 module.exports = pool.promise();
