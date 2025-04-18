@@ -1,24 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Elementos del DOM
+  // Referencias al formulario y campos
   const formulario = document.querySelector("form");
   const usuarioInput = document.getElementById("usuario");
   const passwordInput = document.getElementById("password");
   const botonEnviar = formulario.querySelector('button[type="submit"]');
 
-  // Evento de envío del formulario
-  formulario.addEventListener("submit", manejarEnvioFormulario);
-
-  // Maneja el envío del formulario
-  function manejarEnvioFormulario(evento) {
-    evento.preventDefault();
+  // Evento para manejar el envío del formulario
+  formulario.addEventListener("submit", (e) => {
+    e.preventDefault();
     validarCredenciales();
-  }
+  });
 
-  // Valida y envía credenciales
+  /**
+   * Valida los campos del formulario y realiza la petición al backend
+   */
   async function validarCredenciales() {
     const usuario = usuarioInput.value.trim();
     const password = passwordInput.value.trim();
 
+    // Validación de campos vacíos
     if (!usuario || !password) {
       mostrarMensaje(
         "¡Por favor, introduce tu usuario y contraseña!",
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Crear y mostrar spinner de carga
     const spinner = crearSpinner();
     formulario.insertBefore(spinner, botonEnviar);
 
@@ -37,30 +38,37 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ usuario, password }),
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Retraso del spinner
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Simula tiempo de carga
       spinner.remove();
+
       const datos = await respuesta.json();
 
       if (respuesta.ok) {
         // Inicio de sesión exitoso
         mostrarMensaje("¡Bienvenido! Inicio de sesión exitoso.", "success");
-        // Almacenar el token JWT recibido del backend
-        localStorage.setItem("token", datos.token); // Guardar el token en localStorage
+
+        // Guardar token JWT en localStorage
+        localStorage.setItem("token", datos.token);
+
+        // Redirigir al panel después de 2 segundos
         setTimeout(() => {
           window.location.href = "pages/panel.html";
-        }, 2000); // Retraso de redirección
+        }, 2000);
       } else {
-        mostrarMensaje(datos.error, "danger"); // Usando directamente datos.error
+        // Credenciales incorrectas
+        mostrarMensaje(datos.error, "danger");
       }
-    } catch (error) {
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Retraso del spinner
+    } catch {
+      // Error de conexión o fallo inesperado
+      await new Promise((resolve) => setTimeout(resolve, 500));
       spinner.remove();
-      console.error("Error al conectar:", error);
       mostrarMensaje("¡Error al conectar con el servidor!", "danger");
     }
   }
 
-  // Crea el spinner
+  /**
+   * Crea y devuelve un spinner de carga con clases de Bootstrap
+   */
   function crearSpinner() {
     const spinner = document.createElement("div");
     spinner.classList.add(
@@ -76,9 +84,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return spinner;
   }
 
-  // Muestra mensaje de alerta
+  /**
+   * Muestra un mensaje de alerta (éxito o error)
+   * @param {string} mensaje - Texto del mensaje
+   * @param {string} tipo - 'success' o 'danger'
+   */
   function mostrarMensaje(mensaje, tipo) {
-    const clasesMensaje = { success: "alert-success", danger: "alert-danger" };
+    const clasesMensaje = {
+      success: "alert-success",
+      danger: "alert-danger",
+    };
+
     const mensajeDiv = document.createElement("div");
     mensajeDiv.classList.add(
       "alert",
@@ -88,7 +104,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "text-center"
     );
     mensajeDiv.textContent = mensaje;
+
     formulario.insertBefore(mensajeDiv, botonEnviar);
+
+    // Eliminar el mensaje después de 3 segundos
     setTimeout(() => {
       mensajeDiv.remove();
     }, 3000);
