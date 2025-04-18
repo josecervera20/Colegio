@@ -1,3 +1,4 @@
+// Importa la conexión a la base de datos
 const pool = require("../config/database");
 
 /**
@@ -12,15 +13,20 @@ const ejecutarConsulta = async (query, params) => {
 };
 
 /**
- * Genera dinámicamente una consulta SQL para estadísticas.
+ * Genera dinámicamente una consulta SQL basada en las opciones proporcionadas.
  * @param {Object} opciones - Opciones para construir la consulta.
- * @returns {Object} Consulta SQL y parámetros.
+ * @param {string} opciones.campo - Campo a seleccionar (por ejemplo, 'tipo_visita').
+ * @param {string} opciones.alias - Alias para el campo seleccionado.
+ * @param {string} opciones.agrupador - Campo para agrupar los resultados.
+ * @param {string} [opciones.filtroFecha] - Fecha opcional para filtrar los registros.
+ * @param {number} [opciones.limite] - Límite de resultados (opcional).
+ * @returns {Object} Un objeto con la consulta SQL y sus parámetros.
  */
 const generarConsulta = ({ campo, alias, agrupador, filtroFecha, limite }) => {
   const condicion = filtroFecha ? "WHERE DATE(fecha) = ?" : "";
   const parametros = filtroFecha ? [filtroFecha] : [];
 
-  let query = `
+  const query = `
     SELECT ${campo} AS ${alias}, COUNT(*) AS total
     FROM registros_entrada
     ${condicion}
@@ -35,6 +41,7 @@ const generarConsulta = ({ campo, alias, agrupador, filtroFecha, limite }) => {
 /**
  * Obtiene la cantidad de entradas agrupadas por día.
  * @param {string} fecha - Fecha opcional para filtrar.
+ * @returns {Promise<Array>} Lista de días con el total de entradas.
  */
 const obtenerEntradasPorDia = async (fecha) => {
   const query = `
@@ -51,6 +58,7 @@ const obtenerEntradasPorDia = async (fecha) => {
 /**
  * Obtiene el total de visitantes agrupados por tipo de visita.
  * @param {string} fecha - Fecha opcional para filtrar.
+ * @returns {Promise<Array>} Tipos de visitantes y su cantidad.
  */
 const obtenerTiposVisitante = async (fecha) => {
   const { query, parametros } = generarConsulta({
@@ -59,12 +67,14 @@ const obtenerTiposVisitante = async (fecha) => {
     agrupador: "tipo_visita",
     filtroFecha: fecha,
   });
+
   return await ejecutarConsulta(query, parametros);
 };
 
 /**
- * Obtiene los departamentos más visitados (máx. 5).
+ * Obtiene los 5 departamentos más visitados.
  * @param {string} fecha - Fecha opcional para filtrar.
+ * @returns {Promise<Array>} Departamentos y su cantidad de visitas.
  */
 const obtenerDepartamentosVisitados = async (fecha) => {
   const { query, parametros } = generarConsulta({
@@ -74,6 +84,7 @@ const obtenerDepartamentosVisitados = async (fecha) => {
     filtroFecha: fecha,
     limite: 5,
   });
+
   return await ejecutarConsulta(query, parametros);
 };
 
