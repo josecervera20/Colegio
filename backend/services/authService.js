@@ -3,7 +3,11 @@ const jwt = require("jsonwebtoken");
 const pool = require("../config/database");
 
 /**
- * Autentica al usuario validando su contraseña y generando un token JWT
+ * Autentica a un usuario validando su contraseña y generando un token JWT.
+ * @param {string} usuario - Nombre del usuario.
+ * @param {string} password - Contraseña sin encriptar ingresada por el usuario.
+ * @returns {string} token - Token JWT generado para el usuario autenticado.
+ * @throws {Object} error - Contiene el código de estado y mensaje de error si la autenticación falla.
  */
 const autenticarUsuario = async (usuario, password) => {
   const [rows] = await pool.query("SELECT * FROM usuarios WHERE usuario = ?", [
@@ -21,7 +25,7 @@ const autenticarUsuario = async (usuario, password) => {
     throw { status: 401, message: "¡Usuario o contraseña incorrectos!" };
   }
 
-  // Genera el token JWT con duración de 1 hora
+  // Genera un token válido por 1 hora
   const token = jwt.sign(
     { usuario: user.usuario },
     process.env.JWT_SECRET_KEY,
@@ -32,7 +36,10 @@ const autenticarUsuario = async (usuario, password) => {
 };
 
 /**
- * Registra un nuevo usuario en la base de datos con contraseña hasheada
+ * Registra un nuevo usuario con contraseña encriptada.
+ * @param {string} usuario - Nombre de usuario.
+ * @param {string} password - Contraseña sin encriptar.
+ * @throws {Object} error - Contiene el código de estado y mensaje si el usuario ya existe.
  */
 const registrarUsuario = async (usuario, password) => {
   const [existingUser] = await pool.query(
@@ -52,6 +59,7 @@ const registrarUsuario = async (usuario, password) => {
   ]);
 };
 
+// Exporta las funciones de servicio para autenticación
 module.exports = {
   autenticarUsuario,
   registrarUsuario,
