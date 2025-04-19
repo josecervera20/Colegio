@@ -1,75 +1,85 @@
+// Espera a que el DOM esté completamente cargado antes de ejecutar el script
 document.addEventListener("DOMContentLoaded", () => {
-  // Elementos del DOM
+  // Referencias a elementos del formulario
   const registroForm = document.getElementById("registroForm");
   const nuevoUsuarioInput = document.getElementById("nuevoUsuario");
   const nuevaPasswordInput = document.getElementById("nuevaPassword");
   const confirmarPasswordInput = document.getElementById("confirmarPassword");
   const botonRegistrar = registroForm.querySelector('button[type="submit"]');
 
-  // Evento de envío del formulario de registro
+  // Asignar evento al formulario para manejar el envío
   registroForm.addEventListener("submit", manejarEnvioRegistro);
 
-  // Maneja el envío del formulario de registro
+  /**
+   * Función que maneja el evento submit del formulario
+   * Previene la recarga de página y ejecuta la lógica de registro
+   */
   function manejarEnvioRegistro(event) {
     event.preventDefault();
     registrarUsuario();
   }
 
-  // Realiza la petición de registro
+  /**
+   * Función principal que realiza la validación de datos
+   * y envía la petición de registro al backend
+   */
   async function registrarUsuario() {
     const usuario = nuevoUsuarioInput.value.trim();
     const password = nuevaPasswordInput.value.trim();
     const confirmarPassword = confirmarPasswordInput.value.trim();
 
+    // Validación de campos vacíos
     if (!usuario || !password || !confirmarPassword) {
-      mostrarMensajeRegistro(
-        "¡Por favor, proporciona un nombre de usuario y una contraseña!",
-        "danger"
-      );
+      mostrarMensajeRegistro("¡Completa todos los campos!", "danger");
       return;
     }
 
+    // Validación de coincidencia entre contraseñas
     if (password !== confirmarPassword) {
-      mostrarMensajeRegistro(
-        "¡Las contraseñas que has ingresado no coinciden. Por favor, verifica que sean idénticas!",
-        "danger"
-      );
+      mostrarMensajeRegistro("¡Las contraseñas no coinciden!", "danger");
       return;
     }
 
+    // Mostrar spinner mientras se envía la solicitud
     const spinner = crearSpinnerRegistro();
     registroForm.insertBefore(spinner, botonRegistrar);
 
     try {
+      // Enviar solicitud al servidor para registrar al usuario
       const respuesta = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuario, password }),
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Retraso del spinner
+      // Esperar un breve retraso para mostrar el spinner de forma visible
+      await new Promise((resolve) => setTimeout(resolve, 500));
       spinner.remove();
       const datos = await respuesta.json();
 
+      // Si la respuesta es exitosa
       if (respuesta.ok) {
         mostrarMensajeRegistro(datos.message, "success");
-        registroForm.reset(); // Limpiar el formulario
+        registroForm.reset(); // Limpiar campos del formulario
       } else {
+        // Mostrar mensaje de error devuelto por el servidor
         mostrarMensajeRegistro(
-          datos.error ||
-            "¡Hubo un problema al registrar tu cuenta. Por favor, inténtalo de nuevo más tarde!",
+          datos.error || "¡No se pudo registrar el usuario!",
           "danger"
         );
       }
     } catch (error) {
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Retraso del spinner en caso de error
+      // En caso de error de red o servidor
+      await new Promise((resolve) => setTimeout(resolve, 500));
       spinner.remove();
-      console.error("Error al conectar con el servidor:", error);
       mostrarMensajeRegistro("¡Error al conectar con el servidor!", "danger");
     }
   }
 
-  // Crea el spinner de carga
+  /**
+   * Crea un spinner de carga con clases de Bootstrap
+   * @returns {HTMLElement} Spinner
+   */
   function crearSpinnerRegistro() {
     const spinner = document.createElement("div");
     spinner.classList.add(
@@ -85,7 +95,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return spinner;
   }
 
-  // Muestra mensajes de alerta
+  /**
+   * Muestra un mensaje de alerta debajo del botón de registro
+   * @param {string} mensaje - Texto del mensaje a mostrar
+   * @param {string} tipo - Tipo de alerta (success o danger)
+   */
   function mostrarMensajeRegistro(mensaje, tipo) {
     const clasesMensaje = { success: "alert-success", danger: "alert-danger" };
     const mensajeDiv = document.createElement("div");
@@ -98,6 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     mensajeDiv.textContent = mensaje;
     registroForm.insertBefore(mensajeDiv, botonRegistrar);
+
+    // Ocultar mensaje automáticamente después de 3 segundos
     setTimeout(() => {
       mensajeDiv.remove();
     }, 3000);
