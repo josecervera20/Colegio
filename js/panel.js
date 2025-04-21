@@ -1,47 +1,48 @@
+// Espera a que el DOM esté completamente cargado antes de ejecutar el script
 document.addEventListener("DOMContentLoaded", () => {
-  // Espera carga completa del DOM
-  const token = localStorage.getItem("token"); // Obtiene el token
+  // Verificación de sesión con token
+  const token = localStorage.getItem("token"); // Obtener el token JWT almacenado
 
+  // Si no hay token, redirige al login
   if (!token) {
-    // Si no hay token, redirige a login
     window.location.href = "../index.html";
-    return; // Detiene ejecución
+    return;
   }
 
-  // Petición a ruta protegida
+  /**
+   * Solicita acceso al panel mediante una ruta protegida
+   * Si el token es inválido o expiró, redirige al login
+   */
   fetch("http://localhost:3000/api/panel", {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`, // Incluye token en header
+      Authorization: `Bearer ${token}`, // Incluir token JWT en la cabecera
       "Content-Type": "application/json",
     },
   })
     .then((response) => {
       if (!response.ok) {
-        // Si error (ej: 401), cierra sesión
-        console.error("Error al obtener datos:", response.status);
-        localStorage.removeItem("token"); // Elimina token
-        window.location.href = "../index.html"; // Redirige a login
-        throw new Error("No autorizado");
+        // Si el token es inválido o expirado
+        localStorage.removeItem("token"); // Eliminar token por seguridad
+        window.location.href = "../index.html"; // Redirigir al login
+        throw new Error("Token inválido o expirado");
       }
-      return response.json(); // Parsea a JSON
-    })
-    .then((data) => {
-      // Procesa datos del panel
-      console.log("Mensaje del panel:", data.message);
+      return response.json();
     })
     .catch((error) => {
-      // Maneja errores de petición
-      console.error("Error en la petición:", error);
+      // Si ocurre un error con la petición
+      localStorage.removeItem("token");
+      window.location.href = "../index.html";
     });
 
-  // Lógica botón cerrar sesión
-  const logoutButton = document.querySelector(".logout-button"); // Selecciona botón
+  // Lógica para cerrar la sesión
+  const logoutButton = document.querySelector(".logout-button");
+
   if (logoutButton) {
     logoutButton.addEventListener("click", (event) => {
-      event.preventDefault(); // Evita acción predeterminada
-      localStorage.removeItem("token"); // Elimina token
-      window.location.href = "../index.html"; // Redirige a login
+      event.preventDefault(); // Prevenir comportamiento predeterminado del enlace
+      localStorage.removeItem("token"); // Eliminar el token del almacenamiento
+      window.location.href = "../index.html"; // Redirigir al login
     });
   }
 });
