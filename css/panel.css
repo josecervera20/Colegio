@@ -1,15 +1,14 @@
 /* Estilos del body */
-
 body {
-  background-color: #f8f9fa;
+  background-color: #eef1f5;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   margin: 0;
+  padding: 0;
 }
 
-/* Barra de navegacion */
-
+/* Barra de navegación */
 .navbar {
   padding: 1rem;
   background-color: #ffffff;
@@ -37,50 +36,76 @@ body {
   font-weight: 400;
 }
 
-/* Estilos del Contenedor */
-
-.container {
+/* Panel */
+.panel-main {
   flex: 1;
+  padding: 3rem 1rem;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
 }
 
-/* Estilos del contenedor del Panel */
-
-.panel-container {
-  background: #fbfbfb;
-  padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
-  border-left: 5px solid #FFD700;
-  width: 100%;
-  max-width: 600px;
-}
-
-/* Estilos para el encabezado h3 dentro del contenedor del panel */
-
-.panel-container h3 {
+.panel-title {
   font-family: 'Roboto Slab', serif;
   font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
-/* Estilos para los elementos a dentro del contenedor del panel */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 900px;
+}
 
-.panel-container a {
+/* Tarjetas */
+.option-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+  padding: 2rem;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid #FFD700;
+}
+
+.option-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Icono */
+.option-card i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Título */
+.option-card h5 {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
-/* Adaptable (Responsivo) */
+/* Descripción */
+.option-card p {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: #555;
+}
 
+/* Responsive */
 @media screen and (max-width: 767px) {
   .navbar-brand {
     display: none;
   }
 
-  .panel-container {
-    padding: 1.5rem;
+  .panel-main {
+    padding: 2rem 1rem;
   }
-
 }
