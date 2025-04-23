@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Verificar si el token existe, si no, redirigir al login
+  // Verifica si el token existe, si no, redirige al login
   const token = localStorage.getItem("token");
   if (!token) return (window.location.href = "../index.html");
 
@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().split("T")[0];
   if (fechaSeleccionadaInput) fechaSeleccionadaInput.value = today;
 
-  // Crea un spinner centrado dentro de la card
+  /**
+   * Crea un spinner centrado dentro del contenedor de la tarjeta
+   */
   const crearSpinner = () => {
     const spinnerWrapper = document.createElement("div");
     spinnerWrapper.className =
@@ -37,16 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
     return spinnerWrapper;
   };
 
-  // Crea un mensaje de alerta centrado dentro de la card
-  const crearMensaje = (mensaje, tipo = "info") => {
+  /**
+   * Crea un mensaje de alerta centrado (solo tipo danger)
+   */
+  const crearMensaje = (mensaje) => {
     const mensajeWrapper = document.createElement("div");
-    mensajeWrapper.className = `alert alert-${tipo} text-center position-absolute top-50 start-50 translate-middle w-75`;
+    mensajeWrapper.className =
+      "alert alert-danger text-center position-absolute top-50 start-50 translate-middle w-75";
     mensajeWrapper.textContent = mensaje;
     mensajeWrapper.style.zIndex = 10;
     return mensajeWrapper;
   };
 
-  // Función para obtener datos desde el backend
+  /**
+   * Obtiene datos desde el backend y muestra spinner mientras carga
+   */
   const fetchData = async (url, errorMessage, container) => {
     const spinner = crearSpinner();
     container.appendChild(spinner);
@@ -56,42 +63,42 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Simula un tiempo de espera para mostrar el spinner
-      await new Promise((r) => setTimeout(r, 700));
+      await new Promise((r) => setTimeout(r, 700)); // Simulación de carga
       spinner.remove();
 
       if (!response.ok) throw new Error(`${errorMessage}: ${response.status}`);
 
       const data = await response.json();
-
       return data;
-    } catch (error) {
-      console.error(error);
+    } catch (_) {
       spinner.remove();
-
-      const alert = crearMensaje(
-        "¡Error al conectar con el servidor!",
-        "danger"
+      container.appendChild(
+        crearMensaje("¡Error al conectar con el servidor!")
       );
-      container.appendChild(alert);
       return null;
     }
   };
 
-  // Crea el gráfico con Chart.js
+  /**
+   * Crea una gráfica con Chart.js
+   */
   const createChart = (id, type, data, options) => {
     const ctx = document.getElementById(id)?.getContext("2d");
     return ctx ? new Chart(ctx, { type, data, options }) : null;
   };
 
-  // Genera colores aleatorios para los gráficos
+  /**
+   * Genera colores aleatorios con opacidad para gráficas
+   */
   const generateColors = (count, opacity = 0.7) =>
     Array.from({ length: count }, () => {
       const [r, g, b] = [0, 0, 0].map(() => Math.floor(Math.random() * 255));
       return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     });
 
-  // Formatea la fecha en formato dd/mm/yyyy
+  /**
+   * Formatea fecha en formato dd/mm/yyyy
+   */
   const formatDate = (date) => {
     const d = new Date(date);
     return isNaN(d)
@@ -101,7 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ).padStart(2, "0")}/${d.getFullYear()}`;
   };
 
-  // Renderiza un gráfico individual
+  /**
+   * Renderiza una gráfica con los parámetros proporcionados
+   */
   const renderChart = async ({
     id,
     url,
@@ -115,16 +124,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById(id);
     const container = canvas.closest(".card");
 
-    // Eliminar cualquier spinner o mensaje previo
     container.querySelectorAll(".position-absolute").forEach((e) => e.remove());
 
-    // Destruir gráfico anterior si existe
     if (charts[id]) {
       charts[id].destroy();
       charts[id] = null;
     }
 
-    // Obtener los datos de la API
     const data = await fetchData(
       url,
       `Error al obtener datos para ${id}`,
@@ -132,14 +138,11 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     if (data === null) return;
 
-    // Mostrar mensaje si no hay datos
     if (!data.length) {
-      const mensaje = crearMensaje("No hay datos para esta fecha.", "danger");
-      container.appendChild(mensaje);
+      container.appendChild(crearMensaje("No hay datos para esta fecha."));
       return;
     }
 
-    // Construir los datos y colores para el gráfico
     const bg = generateColors(data.length);
     const labels = data.map((d) =>
       formatLabels ? formatDate(d[labelKey]) : d[labelKey]
@@ -158,15 +161,16 @@ document.addEventListener("DOMContentLoaded", () => {
       ],
     };
 
-    // Crear y guardar la instancia del gráfico
     charts[id] = createChart(id, type, chartData, options);
   };
 
-  // Renderiza todos los gráficos según la fecha
+  /**
+   * Renderiza todas las gráficas con o sin filtro de fecha
+   */
   const renderAllCharts = (fecha = "") => {
     const q = fecha ? `?fecha=${fecha}` : "";
 
-    // Gráfico de entradas por día
+    // Gráfico de entradas por día (con eje X en formato de fecha)
     renderChart({
       id: canvasIds.entradas,
       url: `http://localhost:3000/api/estadisticas/entradas-por-dia${q}`,
@@ -202,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
 
-    // Gráfico de tipos de visitante
+    // Gráfico de tipos de visitante (eje horizontal invertido)
     renderChart({
       id: canvasIds.tipos,
       url: `http://localhost:3000/api/estadisticas/tipos-visitante${q}`,
@@ -227,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
 
-    // Gráfico de departamentos visitados
+    // Gráfico de departamentos más visitados (formato estándar)
     renderChart({
       id: canvasIds.departamentos,
       url: `http://localhost:3000/api/estadisticas/departamentos-visitados${q}`,
@@ -252,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Escucha el formulario de filtrado por fecha
+  // Escucha el envío del formulario de filtro
   if (filtroFechaForm) {
     filtroFechaForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -260,6 +264,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Renderizar gráficas al cargar la página
+  // Renderizar las gráficas al cargar la página
   renderAllCharts();
 });
