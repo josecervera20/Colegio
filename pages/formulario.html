@@ -52,9 +52,7 @@
             <p class="text-center">Por favor registra tu entrada al colegio.</p>
             <form class="row g-3">
                 <div class="row">
-                    <div id="mensajeExito" class="alert alert-success d-none col-md-8 text-center" role="alert">
-                        Registro exitoso. ¡Bienvenido!
-                    </div>
+                    <div id="mensajeRespuesta" class="alert d-none col-md-8 text-center" role="alert"></div>
                 </div>
                 <div class="col-md-6">
                     <label for="fecha" class="form-label">Fecha</label>
@@ -129,7 +127,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmacionModalLabel">Confirmar Registro</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="modalCloseButton"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="modalCloseButton"></button>
                 </div>
                 <div class="modal-body">
                     <p>Por favor, revisa que la siguiente información sea correcta:</p>

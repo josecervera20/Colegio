@@ -111,19 +111,28 @@ form.row.g-3 {
   position: relative;
 }
 
-/* Estilos para el mensaje de éxito */
-#mensajeExito {
+/* Estilos para el mensaje de Respuesta */
+
+#mensajeRespuesta {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-weight: 500;
   letter-spacing: 0.05em;
+  font-family: 'Open Sans', sans-serif;
 }
 
-#mensajeExito.alert-success {
+/* Estilos específicos para la alerta de éxito */
+
+#mensajeRespuesta.alert-success {
   color: #155724;
-  font-family: 'Open Sans', sans-serif;
+}
+
+/* Estilos específicos para la alerta de error */
+
+#mensajeRespuesta.alert-danger {
+  color: #842029;
 }
 
 /* Adaptable (Responsivo) */
