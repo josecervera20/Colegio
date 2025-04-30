@@ -1,4 +1,4 @@
-// Importar funciones auxiliares
+// Importa la función encargada de validar y enviar las credenciales al backend
 import validarCredenciales from "./modules/auth/validarCredenciales.js";
 
 document.addEventListener("DOMContentLoaded", () => {
