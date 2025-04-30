@@ -1,4 +1,5 @@
-import { validarCredenciales } from "./modules/auth/validarCredenciales.js";
+// Importar funciones auxiliares
+import validarCredenciales from "./modules/auth/validarCredenciales.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Referencias al formulario y campos
@@ -10,6 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Evento para manejar el envío del formulario
   formulario.addEventListener("submit", (e) => {
     e.preventDefault();
-    validarCredenciales(formulario, usuarioInput, passwordInput, botonEnviar);
+    validarCredenciales({
+      formulario,
+      usuarioInput,
+      passwordInput,
+      botonEnviar,
+    });
   });
 });

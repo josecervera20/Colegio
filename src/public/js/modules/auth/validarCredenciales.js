@@ -1,29 +1,26 @@
-import { crearSpinner } from "../ui/crearSpinner.js";
-import { mostrarMensaje } from "../ui/mostrarMensaje.js";
+// Importar funciones auxiliares
+import crearSpinner from "../ui/crearSpinner.js";
+import mostrarMensaje from "../ui/mostrarMensaje.js";
 
 /**
  * Valida los campos del formulario y realiza la petición al backend
- * @param {HTMLFormElement} formulario - Formulario de inicio de sesión
- * @param {HTMLInputElement} usuarioInput - Campo de usuario
- * @param {HTMLInputElement} passwordInput - Campo de contraseña
- * @param {HTMLButtonElement} botonEnviar - Botón de envío
  */
-export async function validarCredenciales(
+export default async function validarCredenciales({
   formulario,
   usuarioInput,
   passwordInput,
-  botonEnviar
-) {
+  botonEnviar,
+}) {
   const usuario = usuarioInput.value.trim();
   const password = passwordInput.value.trim();
 
   // Validación de campos vacíos
   if (!usuario || !password) {
     mostrarMensaje(
-      formulario,
-      botonEnviar,
       "¡Por favor, introduce tu usuario y contraseña!",
-      "danger"
+      "danger",
+      formulario,
+      botonEnviar
     );
     return;
   }
@@ -47,10 +44,10 @@ export async function validarCredenciales(
     if (respuesta.ok) {
       // Inicio de sesión exitoso
       mostrarMensaje(
-        formulario,
-        botonEnviar,
         "¡Bienvenido! Inicio de sesión exitoso.",
-        "success"
+        "success",
+        formulario,
+        botonEnviar
       );
 
       // Guardar token JWT en localStorage
@@ -62,17 +59,17 @@ export async function validarCredenciales(
       }, 2000);
     } else {
       // Credenciales incorrectas
-      mostrarMensaje(formulario, botonEnviar, datos.error, "danger");
+      mostrarMensaje(datos.error, "danger", formulario, botonEnviar);
     }
   } catch {
     // Error de conexión o fallo inesperado
     await new Promise((resolve) => setTimeout(resolve, 500));
     spinner.remove();
     mostrarMensaje(
-      formulario,
-      botonEnviar,
       "¡Error al conectar con el servidor!",
-      "danger"
+      "danger",
+      formulario,
+      botonEnviar
     );
   }
 }

@@ -1,11 +1,11 @@
 /**
  * Muestra un mensaje de alerta (éxito o error)
- * @param {HTMLFormElement} formulario - Formulario donde se insertará el mensaje
- * @param {HTMLButtonElement} botonEnviar - Botón de envío, antes del cual se insertará el mensaje
  * @param {string} mensaje - Texto del mensaje
- * @param {string} tipo - Tipo de mensaje: 'success' o 'danger'
+ * @param {string} tipo - 'success' o 'danger'
+ * @param {HTMLFormElement} formulario - Formulario donde insertar el mensaje
+ * @param {HTMLElement} botonEnviar - Elemento de referencia para insertar el mensaje
  */
-export function mostrarMensaje(formulario, botonEnviar, mensaje, tipo) {
+export default function mostrarMensaje(mensaje, tipo, formulario, botonEnviar) {
   const clasesMensaje = {
     success: "alert-success",
     danger: "alert-danger",
