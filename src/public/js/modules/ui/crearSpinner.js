@@ -1,5 +1,6 @@
 /**
- * Crea y devuelve un spinner de carga con clases de Bootstrap
+ * Crea un spinner de carga con clases de Bootstrap
+ * @returns {HTMLElement} Spinner
  */
 export default function crearSpinner() {
   const spinner = document.createElement("div");
