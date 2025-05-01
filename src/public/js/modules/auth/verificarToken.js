@@ -2,7 +2,7 @@
  * Verifica si hay un token en localStorage y realiza una petición al backend
  * Si el token no existe o es inválido, redirige al login
  */
-export function verificarToken() {
+export default function verificarToken() {
   // Verificación de sesión con token
   const token = localStorage.getItem("token"); // Obtener el token JWT almacenado
 
@@ -19,22 +19,20 @@ export function verificarToken() {
   fetch("http://localhost:3000/api/panel", {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`, // Incluir token JWT en la cabecera
+      Authorization: `Bearer ${token}`, // Enviar token en la cabecera
       "Content-Type": "application/json",
     },
   })
     .then((response) => {
       if (!response.ok) {
-        // Si el token es inválido o expirado
-        localStorage.removeItem("token"); // Eliminar token por seguridad
+        localStorage.removeItem("token"); // Eliminar token inválido
         window.location.href = "../index.html"; // Redirigir al login
         throw new Error("Token inválido o expirado");
       }
       return response.json();
     })
-    .catch((error) => {
-      // Si ocurre un error con la petición
-      localStorage.removeItem("token");
-      window.location.href = "../index.html";
+    .catch(() => {
+      localStorage.removeItem("token"); // Eliminar token si falla la petición
+      window.location.href = "../index.html"; // Redirigir al login
     });
 }
